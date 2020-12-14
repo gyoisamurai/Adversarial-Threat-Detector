@@ -6,7 +6,7 @@ import argparse
 import configparser
 
 # ATD modules.
-from attacks.evasion.fgsm import FGSM
+from attacks.evasion import FGSM, CarliniL2, JSMA
 from util import Utilty
 
 # Type of printing.
@@ -79,7 +79,7 @@ if __name__ == '__main__':
                         type=str, help='Specify attack type.')
     parser.add_argument('--poisoning_method', default='fc', choices=['fc', 'cp'],
                         type=str, help='Specify method of Poisoning Attack.')
-    parser.add_argument('--evasion_method', default='fgsm', choices=['fgsm', 'cnw'],
+    parser.add_argument('--evasion_method', default='fgsm', choices=['fgsm', 'cnw', 'jsma'],
                         type=str, help='Specify method of Evasion Attack.')
     parser.add_argument('--inference_method', default='mi', choices=['mi', 'label_only'],
                         type=str, help="Specify method of Membership Inference Attack.")
@@ -110,7 +110,16 @@ if __name__ == '__main__':
             utility.evaluate(classifier, X_adv=X_adv, X_test=X_test, y_test=y_test)
         # Carlini and Wagner Attack.
         elif args.evasion_method == 'cnw':
-            utility.print_message(WARNING, 'Not implementation: {}'.format(args.evasion_method))
+            classifier = utility.wrap_classifier(model, X_test)
+            evasion = CarliniL2(utility=utility, model=classifier, dataset=X_test)
+            X_adv = evasion.attack(confidence=0.5)
+            utility.evaluate(classifier, X_adv=X_adv, X_test=X_test, y_test=y_test)
+        # Jacobian Saliency Map Attack.
+        elif args.evasion_method == 'jsma':
+            classifier = utility.wrap_classifier(model, X_test)
+            evasion = JSMA(utility=utility, model=classifier, dataset=X_test)
+            X_adv = evasion.attack(theta=0.1, gamma=1.0)
+            utility.evaluate(classifier, X_adv=X_adv, X_test=X_test, y_test=y_test)
     # Inference Attacks.
     elif args.attack_type == 'inference':
         utility.print_message(WARNING, 'Not implementation: {}'.format(args.attack_type))
