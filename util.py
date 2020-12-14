@@ -7,6 +7,7 @@ import random
 import configparser
 import numpy as np
 from datetime import datetime
+from PIL import Image
 from logging import getLogger, FileHandler, Formatter
 
 # TensorFlow.
@@ -109,18 +110,22 @@ class Utilty:
             return model
 
     # Load dataset/label from npz.
-    def load_dataset(self, dataset_name, label_name):
+    def load_dataset(self, dataset_name, label_name, use_dataset_num):
         dataset_path = os.path.join(self.target_dir, dataset_name)
         label_path = os.path.join(self.target_dir, label_name)
         if os.path.exists(dataset_path) is False or os.path.exists(label_path) is False:
             self.print_message(FAIL, 'Dataset or Label path not Found: {}/{}'.format(dataset_path, label_path))
             return None, None
         else:
+            # Check dataset number.
             X_test = np.load(dataset_path)
+            if len(X_test[X_test.files[0]]) < use_dataset_num:
+                use_dataset_num = len(X_test[X_test.files[0]])
+
             self.print_message(OK, 'Loaded dataset: {} ({})'.format(dataset_path, X_test.files))
             y_test = np.load(label_path)
             self.print_message(OK, 'Loaded label: {} ({})'.format(label_path, y_test.files))
-            return X_test[X_test.files[0]], y_test[y_test.files[0]]
+            return X_test[X_test.files[0]][:use_dataset_num], y_test[y_test.files[0]][:use_dataset_num]
 
     # Wrap classifier using ART.
     def wrap_classifier(self, model, X_test):
@@ -131,19 +136,26 @@ class Utilty:
                                      use_logits=False)
         return classifier
 
-    # Evaluate accuracy with Adversarial Examples and Normal Dataset.
-    def evaluate(self, model, X_adv, X_test, y_test):
-        self.print_message(NOTE, 'Evaluate accuracy on target model.')
-
-        # Benign examples.
+    # Evaluate accuracy.
+    def evaluate(self, model, X_test, y_test):
         preds = model.predict(X_test)
         accuracy = np.sum(np.argmax(preds, axis=1) == np.argmax(y_test, axis=1)) / len(y_test)
-        self.print_message(WARNING, 'Accuracy on Benign Examples     : {}%'.format(accuracy * 100))
+        return accuracy
 
-        # Adversarial examples.
-        preds = model.predict(X_adv)
-        accuracy = np.sum(np.argmax(preds, axis=1) == np.argmax(y_test, axis=1)) / len(y_test)
-        self.print_message(WARNING, 'Accuracy on Adversarial Examples: {}%'.format(accuracy * 100))
+    # Random sampling.
+    def random_sampling(self, data_size=100, sample_num=5):
+        sample_list = []
+        for _ in range(sample_num):
+            sample_list.append(random.randint(0, data_size - 1))
+        return sample_list
+
+    # Save Adversarial Examples.
+    def save_adv_images(self, idx, method, X_adv, save_path):
+        scale = 255.0 / np.max(X_adv)
+        pil_img = Image.fromarray(np.uint8(X_adv * scale))
+        save_full_path = os.path.join(save_path, 'adv_{}_{}.jpg'.format(method, idx+1))
+        pil_img.save(save_full_path)
+        return save_full_path
 
     # Write logs.
     def write_log(self, loglevel, message):

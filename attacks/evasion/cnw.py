@@ -28,7 +28,7 @@ class CarliniL2:
     # Create Adversarial Examples.
     def attack(self, confidence=0.5):
         # Create Adversarial Examples using Carlini and Wagner L_2 Attack.
-        self.utility.print_message(WARNING, 'Creating Adversarial Examples using Carlini and Wagner L_2 Attack.')
+        self.utility.print_message(NOTE, 'Creating Adversarial Examples using Carlini and Wagner L_2 Attack.')
         attack = CarliniL2Method(classifier=self.model,
                                  confidence=confidence,
                                  targeted=False,

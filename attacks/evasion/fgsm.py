@@ -28,7 +28,7 @@ class FGSM:
     # Create Adversarial Examples.
     def attack(self, eps=0.05):
         # Create Adversarial Examples using FGSM.
-        self.utility.print_message(WARNING, 'Creating Adversarial Examples using FGSM.')
+        self.utility.print_message(NOTE, 'Creating Adversarial Examples using FGSM.')
         attack = FastGradientMethod(estimator=self.model, eps=eps)
         X_adv = attack.generate(x=self.dataset)
         return X_adv

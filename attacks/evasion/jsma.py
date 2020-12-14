@@ -28,7 +28,7 @@ class JSMA:
     # Create Adversarial Examples.
     def attack(self, theta=0.1, gamma=1.0):
         # Create Adversarial Examples using JSMA.
-        self.utility.print_message(WARNING, 'Creating Adversarial Examples using JSMA.')
+        self.utility.print_message(NOTE, 'Creating Adversarial Examples using JSMA.')
         attack = SaliencyMapMethod(classifier=self.model,
                                    theta=theta,
                                    gamma=gamma,
