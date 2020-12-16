@@ -15,9 +15,11 @@ NONE = 'none'     # No label.
 
 
 # Create report.
-class CreateReport:
-    def __init__(self, utility):
+class HtmlReport:
+    def __init__(self, utility, report_utility):
         self.utility = utility
+        self.report_util = report_utility
+
         # Read config file.
         config = configparser.ConfigParser()
         self.file_name = os.path.basename(__file__)
@@ -45,6 +47,7 @@ class CreateReport:
         # Make directory.
         self.report_path = self.report_path.replace('*', self.utility.get_current_date(indicate_format='%Y%m%d%H%M%S'))
         os.makedirs(self.report_path, exist_ok=False)
+        return self.report_path
 
     # Make image file for Adversarial Examples.
     def make_image(self, X_adv, method, sampling_idx):

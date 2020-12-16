@@ -103,11 +103,11 @@ class Utilty:
         model_path = os.path.join(self.target_dir, model_name)
         if os.path.exists(model_path) is False:
             self.print_message(FAIL, 'Model path not Found: {}'.format(model_path))
-            return None
+            return None, None
         else:
             model = load_model(model_path)
             self.print_message(OK, 'Loaded target model: {}'.format(model_path))
-            return model
+            return model_path, model
 
     # Load dataset/label from npz.
     def load_dataset(self, dataset_name, label_name, use_dataset_num):
@@ -115,7 +115,7 @@ class Utilty:
         label_path = os.path.join(self.target_dir, label_name)
         if os.path.exists(dataset_path) is False or os.path.exists(label_path) is False:
             self.print_message(FAIL, 'Dataset or Label path not Found: {}/{}'.format(dataset_path, label_path))
-            return None, None
+            return None, None, None, None
         else:
             # Check dataset number.
             X_test = np.load(dataset_path)
@@ -125,7 +125,7 @@ class Utilty:
             self.print_message(OK, 'Loaded dataset: {} ({})'.format(dataset_path, X_test.files))
             y_test = np.load(label_path)
             self.print_message(OK, 'Loaded label: {} ({})'.format(label_path, y_test.files))
-            return X_test[X_test.files[0]][:use_dataset_num], y_test[y_test.files[0]][:use_dataset_num]
+            return dataset_path, label_path, X_test[X_test.files[0]][:use_dataset_num], y_test[y_test.files[0]][:use_dataset_num]
 
     # Wrap classifier using ART.
     def wrap_classifier(self, model, X_test):
@@ -149,13 +149,21 @@ class Utilty:
             sample_list.append(random.randint(0, data_size - 1))
         return sample_list
 
-    # Save Adversarial Examples.
+    # Save Adversarial Examples to Image file.
     def save_adv_images(self, idx, method, X_adv, save_path):
         scale = 255.0 / np.max(X_adv)
         pil_img = Image.fromarray(np.uint8(X_adv * scale))
         save_full_path = os.path.join(save_path, 'adv_{}_{}.jpg'.format(method, idx+1))
         pil_img.save(save_full_path)
+        self.print_message(OK, 'Saved Adversarial Examples to image file: {}'.format(save_full_path))
         return save_full_path
+
+    # Save Adversarial Examples to npz format.
+    def save_adv_npz(self, method, X_adv, save_path):
+        save_full_path = os.path.join(save_path, 'adv_{}'.format(method))
+        np.savez(save_full_path, adv=X_adv)
+        self.print_message(OK, 'Saved Adversarial Examples to npz file: {}'.format(save_full_path))
+        return save_full_path + '.npz'
 
     # Write logs.
     def write_log(self, loglevel, message):
@@ -184,33 +192,3 @@ class Utilty:
     # Transform date from object to string.
     def transform_date_string(self, target_date):
         return target_date.strftime(self.report_date_format)
-
-    # Check argument values.
-    def check_arg_value(self, protocol, fqdn, port, path):
-        # Check protocol.
-        if protocol not in ['http', 'https']:
-            self.print_message(FAIL, 'Invalid protocol : {}'.format(protocol))
-
-        # Check IP address.
-        if isinstance(fqdn, str) is False and isinstance(fqdn, int) is False:
-            self.print_message(FAIL, 'Invalid IP address : {}'.format(fqdn))
-            return False
-
-        # Check port number.
-        if port.isdigit() is False:
-            self.print_message(FAIL, 'Invalid port number : {}'.format(port))
-            return False
-        elif (int(port) < 1) or (int(port) > 65535):
-            self.print_message(FAIL, 'Invalid port number : {}'.format(port))
-            return False
-
-        # Check path.
-        if isinstance(path, str) is False and isinstance(path, int) is False:
-            self.print_message(FAIL, 'Invalid path : {}'.format(path))
-            return False
-        # elif path.startswith('/') is False or path.endswith('/') is False:
-        elif path.startswith('/') is False:
-            self.print_message(FAIL, 'Invalid path : {}'.format(path))
-            return False
-
-        return True
