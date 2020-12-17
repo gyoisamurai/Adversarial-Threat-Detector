@@ -178,6 +178,7 @@ if __name__ == '__main__':
         report_ipynb.label_path = label_path
         report_ipynb.model_path = model_path
         report_ipynb.adv_path = adv_path_list[0]
+        report_ipynb.dataset_num = args.use_dataset_num
         report_ipynb.create_report(evasion=True)
 
     print(os.path.basename(__file__) + ' Done!!')
