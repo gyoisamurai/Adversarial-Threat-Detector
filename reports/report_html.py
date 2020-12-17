@@ -31,7 +31,7 @@ class HtmlReport:
         self.save_adv_list = []
 
     # Create report.
-    def create_report(self, poisoning=False, evasion=False, inference = False):
+    def create_report(self, poisoning=False, evasion=False, inference=False):
         # Setting template.
         env = jinja2.Environment(loader=jinja2.FileSystemLoader(self.report_util.base_path))
         template = env.get_template(self.report_util.template)

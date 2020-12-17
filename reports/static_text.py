@@ -6,7 +6,7 @@ import enum
 # Common parts.
 class Common(enum.Enum):
     # Title, Introduction.
-    md_report_title = "# Adversarial Threat Detector Scan report（開発者向け（仮））.  "
+    md_report_title = "# ATD Scan report（開発者向け（仮））.  "
     md_1_1_title = "## サマリ"
     md_1_1_text = """このレポートは、Adversarial Threat Detectorのスキャン結果レポートです。  
     これはテストです。これはテストです。これはテストです。  

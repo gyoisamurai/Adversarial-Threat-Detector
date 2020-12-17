@@ -2,85 +2,291 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>ATD Scan report</title>
+    <link href="https://fonts.googleapis.com/css?family=Bitter:400,700" rel="stylesheet">
     <style>
-        * {
-            font-family: sans-serif;
-        }
         body {
-            padding: 20px;
+          margin: 0;
+          padding: 0;
+          background-color: #cccccc;
+          color: #333333;
+          font-size: 15px;
+          line-height: 2;
         }
+
+        p, h1, h2, h3, h4, h5, h6 {
+          margin-top: 0;
+        }
+
+        img {
+          vertical-align: bottom;
+        }
+
+        ul {
+          margin: 0;
+          padding: 0;
+        }
+
+        a {
+          color: #3583aa;
+          text-decoration: none;
+        }
+
+        a:visited {
+          color: #788d98;
+        }
+
+        a:hover {
+          text-decoration: underline;
+        }
+
+        header {
+          width: 960px;
+          height: 100px;
+          margin: 0 auto;
+        }
+
+        .logo {
+          float: left;
+          margin-top: 50px;
+        }
+
+        .global-nav {
+          float: right;
+          margin-top: 60px;
+        }
+
+        .global-nav li {
+          float: left;
+          margin: 0 30px;
+          font-size: 20px;
+          list-style: none;
+          font-family: 'Bitter', serif;
+        }
+
+        .global-nav li a {
+          color: #ffffff;
+        }
+
+        .global-nav li a:hover {
+          border-bottom: 2px solid: #ffffff;
+          padding-bottom: 3px;
+          text-decoration: none;
+        }
+
+        #wrap {
+          clear: both;
+          background-color: #ffffff;
+          margin-top: 100px;
+          padding: 40px 0;
+        }
+
+        .content {
+          width: 960px;
+          margin: 0 auto;
+        }
+
+        footer {
+          text-align: center;
+          color: #ffffff;
+          padding: 20px 0;
+          background-color: #767671;
+        }
+
+        footer small {
+          font-size: 12px;
+        }
+
+        #about {
+          background-image: url(./img/background.jpg);
+          background-repeat: no-repeat;
+          background-position: center top;
+          background-attachment: fixed;
+          background-size: 100% auto;
+        }
+
+        .main-center {
+          width: 940px;
+          margin: 0 auto;
+        }
+
+        h1 {
+          font-family: 'Bitter', serif;
+          font-size: 36px;
+          border-bottom: 1px solid #cccccc;
+        }
+
+        h2 {
+          font-family: 'Bitter', serif;
+          font-size: 24px;
+        }
+
+        .icon:before {
+          content: "";
+          padding-right: 10px;
+          border-left: 7px solid #9cb4a4;
+        }
+
+        #about .executive_summary {
+          width: 540px;
+        }
+
+        #about .executive_summary span {
+          font-weight: bold;
+        }
+
+        #about .clearfix:after {
+          content: "";
+          display: block;
+          clear: both;
+        }
+
+        section {
+          margin-bottom: 35px;
+        }
+
+        #about .scanned_result th {
+          width: 240px;
+          background-color: #f0f0f0;
+          padding: 12px 0;
+          border: 1px solid #cccccc;
+        }
+
+        #about .scanned_result td {
+          width: 660px;
+          border: 1px solid #cccccc;
+        }
+
+        #about .scanned_result tr td:nth-child(1) {
+          width: 20px;
+          text-align: center;
+          vertical-align: center;
+        }
+
+        #about .scanned_result tr td:nth-child(2) {
+          width: 100px;
+          text-align: center;
+          vertical-align: center;
+        }
+
+        #about .scanned_result tr td:nth-child(3) {
+          width: 300px;
+          text-align: left;
+          padding: 0 0 0 10px;
+          vertical-align: center;
+        }
+
+        #about .scanned_result tr td:nth-child(4) {
+          width: 100px;
+          text-align: center;
+          vertical-align: center;
+        }
+
         table {
-            border-collapse: collapse;
-            text-align: right;
-        }
-        table tr {
-            border-bottom: 1px solid
-        }
-        table th, table td {
-            padding: 10px 20px;
+          border-spacing: 0;
+          border-collapse: collapse;
         }
     </style>
 </head>
-<body>
-<h1>Adversarial Threat Detector Scan Report</h1>
 
-<h2>1. Executive Summary</h2>
-<table>
-    <thead>
-        <tr>
-            <th>Attack Type</th>
-            <th>Vulnerability</th>
-            <th>Risk Rating</th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr>
-            <td>Poisoning Attack</td>
-            <td>Poisoning test test.</td>
-            <td>Medium</td>
-        </tr>
-        <tr>
-            <td>Evasion Attack</td>
-            <td>Evasion test test.</td>
-            <td>Critical</td>
-        </tr>
-        <tr>
-            <td>Inference Attack</td>
-            <td>Inference test test.</td>
-            <td>High</td>
-        </tr>
-    </tbody>
-</table>
-<p>testtesttesttesttesttest.</p>
+<body id="about">
+<header>
+    <div class="logo">
+        <img src="./img/logo-white.png" width=200 alt="Adversarial Threat Detector's logo.">
+    </div>
+    <nav>
+        <ul class="global-nav">
+            <li><a href="#executive_summary">Executive Summary</a></li>
+            <li><a href="#scanned_result">Scanned result</a></li>
+            <li><a href="#vulnerability_detail">Vulnerability detail</a></li>
+        </ul>
+    </nav>
+</header>
+<div id="wrap">
+    <div class="content">
+        <div class="main-center">
+            <h1>ATD Scan Report</h1>
+            <p>ATD (Adversarial Threat Detector) のスキャン・レポートです。</p>
+            <section class="executive_summary clearfix">
+                <div class="summary-txt">
+                    <h2 class="icon">Executive Summary</h2>
+                    <p><span>これはテストです。</span><br>テストテストテストテストテストテストテストテストテストテストテストテスト。</p>
+                </div>
+            </section>
+            <section class="scanned_result">
+                <h2 class="icon">Scanned result</h2>
+                <table>
+                    <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Attack Type</th>
+                        <th>Method</th>
+                        <th>Consequence</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td>1</td>
+                        <td>Poisoning</td>
+                        <td>Feature Collision Attack</td>
+                        <td>N/A</td>
+                    </tr>
+                    <tr>
+                        <td>2</td>
+                        <td>Poisoning</td>
+                        <td>Convex Polytope Attack</td>
+                        <td>N/A</td>
+                    </tr>
+                    <tr>
+                        <td>3</td>
+                        <td>Evasion</td>
+                        <td>Fast Gradient Sign Method (FGSM)</td>
+                        <td>Weak</td>
+                    </tr>
+                    <tr>
+                        <td>4</td>
+                        <td>Evasion</td>
+                        <td>Carlini and Wagner Attack (C&W)</td>
+                        <td>N/A</td>
+                    </tr>
+                    <tr>
+                        <td>5</td>
+                        <td>Evasion</td>
+                        <td>Jacobian Saliency Map Attack (JSMA)</td>
+                        <td>N/A</td>
+                    </tr>
+                    <tr>
+                        <td>6</td>
+                        <td>Exfiltration</td>
+                        <td>Membership Inference Attack</td>
+                        <td>N/A</td>
+                    </tr>
+                    <tr>
+                        <td>7</td>
+                        <td>Exfiltration</td>
+                        <td>Label Only MI Attack</td>
+                        <td>N/A</td>
+                    </tr>
+                    <tr>
+                        <td>8</td>
+                        <td>Exfiltration</td>
+                        <td>Model inversion</td>
+                        <td>N/A</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </section>
+            <section class="vulnerability_detail">
+                <h2 class="icon">Vulnerability detail</h2>
+                <p><span>これもテストです。</span><br>テストテストテストテストテストテストテストテストテストテストテストテスト。</p>
+            </section>
 
-<h2>Critical Severity Vulnerability</h2>
-<p>testtesttesttesttesttest.</p>
+        </div>
+    </div>
+</div>
 
-<h3>Evasion Attack</h3>
-<p>testtesttesttesttesttest.</p>
-
-<h4>Benign Examples</h4>
-<img src='plot.svg' width="600">
-<h4>Fast Gradient Signed Method (FGSM)</h4>
-<img src='plot.svg' width="600">
-<h4>Carlini and Wagner Attack (C&W Attack)</h4>
-<img src='plot.svg' width="600">
-<h4>Jacobian Saliency Map Attack (JSMA)</h4>
-<img src='plot.svg' width="600">
-
-<h2>High Severity Vulnerability</h2>
-<p>testtesttesttesttesttest.</p>
-<h3>Inference Attack</h3>
-<p>testtesttesttesttesttest.</p>
-
-<h2>Medium Severity Vulnerability</h2>
-<p>testtesttesttesttesttest.</p>
-<h3>Poisoning Attack</h3>
-<p>testtesttesttesttesttest.</p>
-
-<h2>Low Severity Vulnerability</h2>
-<p>testtesttesttesttesttest.</p>
-
+<footer>
+    <small>©2020- Mitsui Bussan Secure Directions, Inc. All rights reserved.</small>
+</footer>
 </body>
 </html>

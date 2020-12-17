@@ -38,13 +38,15 @@ class ReportUtility:
 
         # Saved list for Adversarial Examples.
         self.save_adv_list = []
+        self.adv_image_path = ''
 
     # Make report directory.
     def make_report_dir(self):
         # Make directory.
         self.report_path = self.report_path.replace('*', self.utility.get_current_date(indicate_format='%Y%m%d%H%M%S'))
+        self.adv_image_path = os.path.join(self.report_path, 'img')
         os.makedirs(self.report_path, exist_ok=False)
-        return self.report_path
+        os.makedirs(self.adv_image_path, exist_ok=False)
 
     # Make image file for Adversarial Examples.
     def make_image(self, X_adv, method, sampling_idx):
