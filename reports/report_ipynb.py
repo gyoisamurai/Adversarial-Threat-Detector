@@ -15,9 +15,9 @@ NONE = 'none'     # No label.
 
 # Create report.
 class IpynbReport:
-    def __init__(self, utility, report_util):
+    def __init__(self, utility):
         self.utility = utility
-        self.report_util = report_util
+        self.report_util = None
 
         # Read config file.
         config = configparser.ConfigParser()
@@ -31,7 +31,6 @@ class IpynbReport:
         self.dataset_path = ''
         self.label_path = ''
         self.dataset_num = 0
-        self.adv_path = ''
 
     # Create common part.
     def create_common(self, nb):
@@ -67,7 +66,7 @@ class IpynbReport:
         return nb
 
     # Create evasion (FGSM) part.
-    def create_evasion_fgsm(self, nb):
+    def create_evasion_fgsm(self, nb, aes_path):
         self.utility.print_message(OK, 'Creating Evasion (FGSM) part...')
 
         # FGSM.
@@ -76,7 +75,7 @@ class IpynbReport:
                             nbformat.v4.new_markdown_cell(EvasionAttack.md_ae_fgsm_1_title.value),
                             nbformat.v4.new_markdown_cell(EvasionAttack.md_ae_fgsm_1_text.value),
                             nbformat.v4.new_markdown_cell(EvasionAttack.md_ae_fgsm_2_title.value),
-                            nbformat.v4.new_code_cell(EvasionAttack.cd_ae_fgsm_2_code.value.format(self.adv_path)),
+                            nbformat.v4.new_code_cell(EvasionAttack.cd_ae_fgsm_2_code.value.format(aes_path)),
                             nbformat.v4.new_markdown_cell(EvasionAttack.md_ae_fgsm_3_title.value),
                             nbformat.v4.new_code_cell(EvasionAttack.cd_ae_fgsm_3_code.value.format(self.dataset_num)),
                             nbformat.v4.new_markdown_cell(EvasionAttack.md_ae_fgsm_4_title.value),
@@ -93,25 +92,40 @@ class IpynbReport:
         return nb
 
     # Create report.
-    def create_report(self, poisoning=False, evasion=False, inference=False):
+    def create_report(self):
         self.utility.print_message(NOTE, 'Creating report...')
         nb = nbformat.v4.new_notebook()
+
+        # Report Setting.
+        self.model_path = self.report_util.template_target['model_path']
+        self.dataset_path = self.report_util.template_target['dataset_path']
+        self.label_path = self.report_util.template_target['label_path']
+        self.dataset_num = self.report_util.template_target['dataset_num']
 
         # Create common part.
         nb = self.create_common(nb)
 
         # Create replay part.
-        if poisoning:
+        if self.report_util.template_data_poisoning['exist']:
             self.utility.print_message(WARNING, 'Not implementation.')
-        elif evasion:
-            # Create FGSM.
-            nb = self.create_evasion_fgsm(nb)
-
-            # Create ipynb file for Evasion Attack.
-            report_full_path = os.path.join(self.report_util.report_path, 'evasion_fgsm.ipynb')
-            with open(report_full_path, 'w') as fout:
-                nbformat.write(nb, fout)
-        elif inference:
+        elif self.report_util.template_model_poisoning['exist']:
+            self.utility.print_message(WARNING, 'Not implementation.')
+        elif self.report_util.template_evasion['exist']:
+            if self.report_util.template_evasion['fgsm']['exist']:
+                # Create FGSM.
+                nb = self.create_evasion_fgsm(nb, self.report_util.template_evasion['fgsm']['aes_path'])
+                report_full_path = os.path.join(self.report_util.report_path, 'evasion_fgsm.ipynb')
+                with open(report_full_path, 'w') as fout:
+                    nbformat.write(nb, fout)
+                self.report_util.template_evasion['fgsm']['ipynb_path'] = report_full_path
+            if self.report_util.template_evasion['cnw']['exist']:
+                # Create C&W.
+                self.utility.print_message(WARNING, 'Not implementation.')
+            if self.report_util.template_evasion['jsma']['exist']:
+                # Create JSMA.
+                self.utility.print_message(WARNING, 'Not implementation.')
+        elif self.report_util.template_exfiltration['exist']:
             self.utility.print_message(WARNING, 'Not implementation.')
 
         self.utility.print_message(NOTE, 'Done creating report.')
+        return self.report_util

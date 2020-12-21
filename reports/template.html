@@ -98,7 +98,7 @@
         }
 
         #about {
-          background-image: url(./img/background.jpg);
+          background-image: url(../img/background.jpg);
           background-repeat: no-repeat;
           background-position: center top;
           background-attachment: fixed;
@@ -121,14 +121,30 @@
           font-size: 24px;
         }
 
-        .icon:before {
+        h3 {
+          font-family: 'Bitter', serif;
+          font-size: 18px;
+        }
+
+        h4 {
+          font-family: 'Bitter', serif;
+          font-size: 16px;
+        }
+
+        .h2_icon:before {
           content: "";
           padding-right: 10px;
           border-left: 7px solid #9cb4a4;
         }
 
+        .h3_icon:before {
+          content: "";
+          padding-right: 10px;
+          border-left: 7px solid #696969;
+        }
+
         #about .executive_summary {
-          width: 540px;
+          width: 940px;
         }
 
         #about .executive_summary span {
@@ -141,50 +157,127 @@
           clear: both;
         }
 
-        section {
-          margin-bottom: 35px;
-        }
-
-        #about .scanned_result th {
-          width: 240px;
+        #about .table_target_info th {
+          width: 940px;
           background-color: #f0f0f0;
           padding: 12px 0;
           border: 1px solid #cccccc;
         }
 
-        #about .scanned_result td {
-          width: 660px;
+        #about .table_target_info td {
+          width: 940px;
+          border: 1px solid #cccccc;
+          text-align: left;
+          padding: 0 0 0 10px;
+        }
+
+        #about .table_target_info tr th:nth-child(1) {
+          width: 200px;
+          text-align: center;
+          vertical-align: center;
+        }
+
+        #about .table_summary th {
+          width: 940px;
+          background-color: #f0f0f0;
+          padding: 12px;
+          text-align: center;
           border: 1px solid #cccccc;
         }
 
-        #about .scanned_result tr td:nth-child(1) {
-          width: 20px;
+        #about .table_summary td {
+          width: 940px;
+          border: 1px solid #cccccc;
+        }
+
+        #about .table_summary tr td:nth-child(1) {
+          width: 50px;
           text-align: center;
           vertical-align: center;
         }
 
-        #about .scanned_result tr td:nth-child(2) {
+        #about .table_summary tr td:nth-child(2) {
           width: 100px;
           text-align: center;
           vertical-align: center;
         }
 
-        #about .scanned_result tr td:nth-child(3) {
-          width: 300px;
+        #about .table_summary tr td:nth-child(3) {
+          width: 100px;
+          text-align: center;
+          padding: 12px;
+          vertical-align: center;
+        }
+
+        #about .table_summary tr td:nth-child(4) {
+          width: 500px;
           text-align: left;
-          padding: 0 0 0 10px;
-          vertical-align: center;
-        }
-
-        #about .scanned_result tr td:nth-child(4) {
-          width: 100px;
-          text-align: center;
+          padding: 12px;
           vertical-align: center;
         }
 
         table {
           border-spacing: 0;
           border-collapse: collapse;
+          margin: 0 0 20px 0;
+          float: left;
+        }
+
+        section {
+          margin-bottom: 35px;
+        }
+
+        section .target_information {
+          text-align: left;
+          padding: 0 0 0 10px;
+        }
+
+        section .dataset {
+          text-align: left;
+          padding: 0 0 0 10px;
+        }
+
+        section .summary {
+          text-align: left;
+          padding: 0 0 0 10px;
+        }
+
+        section .vuln_1st_category {
+          text-align: left;
+          padding: 0 0 0 10px;
+        }
+
+        section .vuln_1st_category ul, ol {
+          padding: 0;
+          position: relative;
+          margin: 0 0 30px;
+        }
+
+        section .vuln_1st_category ul li, ol li {
+          color: #e366a;
+          border-left: solid 10px #cccccc;
+          background: #f5f5f5;
+          margin-bottom: 3px;
+          line-height: 1.5;
+          padding: 0.5em;
+          list-style-type: none!important;
+        }
+
+        section .vuln_2nd_category {
+          text-align: left;
+          padding: 0 0 0 20px;
+        }
+
+        #about .benign_list li {
+          float: left;
+          list-style: none;
+          margin: 0 20px 15px 0;
+        }
+
+        #about .aes_list li {
+          float: left;
+          list-style: none;
+          margin: 0 20px 15px 0;
         }
     </style>
 </head>
@@ -192,13 +285,13 @@
 <body id="about">
 <header>
     <div class="logo">
-        <img src="./img/logo-white.png" width=200 alt="Adversarial Threat Detector's logo.">
+        <img src="../img/logo-white.png" width=250 alt="Adversarial Threat Detector's logo.">
     </div>
     <nav>
         <ul class="global-nav">
-            <li><a href="#executive_summary">Executive Summary</a></li>
-            <li><a href="#scanned_result">Scanned result</a></li>
-            <li><a href="#vulnerability_detail">Vulnerability detail</a></li>
+            <li><a href="template.html#executive_summary">Executive Summary</a></li>
+            <li><a href="template.html#scanned_result">Scanned result</a></li>
+            <li><a href="template.html#vulnerability_detail">Vulnerability detail</a></li>
         </ul>
     </nav>
 </header>
@@ -207,78 +300,284 @@
         <div class="main-center">
             <h1>ATD Scan Report</h1>
             <p>ATD (Adversarial Threat Detector) のスキャン・レポートです。</p>
-            <section class="executive_summary clearfix">
+            <section id="executive_summary" class="executive_summary clearfix">
                 <div class="summary-txt">
-                    <h2 class="icon">Executive Summary</h2>
-                    <p><span>これはテストです。</span><br>テストテストテストテストテストテストテストテストテストテストテストテスト。</p>
+                    <h2 class="h2_icon">総評（Executive Summary）</h2>
+                    <p><span>これはテストです。</span><br>ここに総評を書きます。テストテストテストテストテストテストテストテストテストテストテストテスト。</p>
                 </div>
             </section>
-            <section class="scanned_result">
-                <h2 class="icon">Scanned result</h2>
-                <table>
-                    <thead>
-                    <tr>
-                        <th>#</th>
-                        <th>Attack Type</th>
-                        <th>Method</th>
-                        <th>Consequence</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr>
-                        <td>1</td>
-                        <td>Poisoning</td>
-                        <td>Feature Collision Attack</td>
-                        <td>N/A</td>
-                    </tr>
-                    <tr>
-                        <td>2</td>
-                        <td>Poisoning</td>
-                        <td>Convex Polytope Attack</td>
-                        <td>N/A</td>
-                    </tr>
-                    <tr>
-                        <td>3</td>
-                        <td>Evasion</td>
-                        <td>Fast Gradient Sign Method (FGSM)</td>
-                        <td>Weak</td>
-                    </tr>
-                    <tr>
-                        <td>4</td>
-                        <td>Evasion</td>
-                        <td>Carlini and Wagner Attack (C&W)</td>
-                        <td>N/A</td>
-                    </tr>
-                    <tr>
-                        <td>5</td>
-                        <td>Evasion</td>
-                        <td>Jacobian Saliency Map Attack (JSMA)</td>
-                        <td>N/A</td>
-                    </tr>
-                    <tr>
-                        <td>6</td>
-                        <td>Exfiltration</td>
-                        <td>Membership Inference Attack</td>
-                        <td>N/A</td>
-                    </tr>
-                    <tr>
-                        <td>7</td>
-                        <td>Exfiltration</td>
-                        <td>Label Only MI Attack</td>
-                        <td>N/A</td>
-                    </tr>
-                    <tr>
-                        <td>8</td>
-                        <td>Exfiltration</td>
-                        <td>Model inversion</td>
-                        <td>N/A</td>
-                    </tr>
-                    </tbody>
-                </table>
+
+            <section id="scanned_result" class="scanned_result">
+                <h2 class="h2_icon">スキャン結果（Scanned result）</h2>
+
+                <section class="target_information">
+                    <h3 class="h3_icon">基本情報（Target Information）</h3>
+                    <p>スキャン対象モデルの基本情報です。</p>
+                    <table class="table_target_info">
+                        <tr>
+                            <th>モデル</th>
+                            <td>{{ target.model_path }}</td>
+                        </tr>
+                        <tr>
+                            <th>データセット</th>
+                            <td>{{ target.dataset_path }}</td>
+                        </tr>
+                        <tr>
+                            <th>データ数</th>
+                            <td>{{ target.dataset_num }}</td>
+                        </tr>
+                        <tr>
+                            <th>推論精度</th>
+                            <td>{{ target.accuracy }}</td>
+                        </tr>
+                    </table>
+                </section>
+
+                <section class="dataset">
+                    <h3 class="h3_icon">データセット（Dataset）</h3>
+                    <p>データセットの一例を表示します。</p>
+                    <ul class="clearfix benign_list">
+                        <li><img src="{{ target.dataset_img.img1 }}" alt="Benign sample #1."></li>
+                        <li><img src="{{ target.dataset_img.img2 }}" alt="Benign sample #2."></li>
+                        <li><img src="{{ target.dataset_img.img3 }}" alt="Benign sample #3."></li>
+                        <li><img src="{{ target.dataset_img.img4 }}" alt="Benign sample #4."></li>
+                        <li><img src="{{ target.dataset_img.img5 }}" alt="Benign sample #5."></li>
+                    </ul>
+                </section>
+
+                <section class="summary">
+                    <h3 class="h3_icon">結果概要（Summary）</h3>
+                    <p>スキャン結果一覧です。</p>
+                    <table class="table_summary">
+                        <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Attack Type</th>
+                            <th>Consequence</th>
+                            <th>Summary</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td>1</td>
+                            <td>データ汚染攻撃（Data Poisoning）</td>
+                            {% if data_poisoning.exist %}
+                            <td>{{ data_poisoning.consequence }}</td>
+                            <td>{{ data_poisoning.summary }}</td>
+                            {% else %}
+                            <td>N/A</td>
+                            <td>未スキャン。</td>
+                            {% endif %}
+                        </tr>
+                        <tr>
+                            <td>2</td>
+                            <td>モデル汚染攻撃（Model Poisoning）</td>
+                            {% if model_poisoning.exist %}
+                            <td>{{ model_poisoning.consequence }}</td>
+                            <td>{{ model_poisoning.summary }}</td>
+                            {% else %}
+                            <td>N/A</td>
+                            <td>未スキャン。</td>
+                            {% endif %}
+                        </tr>
+                        <tr>
+                            <td>3</td>
+                            <td>回避攻撃（Evasion）</td>
+                            {% if evasion.exist %}
+                            <td>{{ evasion.consequence }}</td>
+                            <td>{{ evasion.summary }}</td>
+                            {% else %}
+                            <td>N/A</td>
+                            <td>未スキャン。</td>
+                            {% endif %}
+                        </tr>
+                        <tr>
+                            <td>4</td>
+                            <td>抽出攻撃（Exfiltration）</td>
+                            {% if exfiltration.exist %}
+                            <td>{{ exfiltration.consequence }}</td>
+                            <td>{{ exfiltration.summary }}</td>
+                            {% else %}
+                            <td>N/A</td>
+                            <td>未スキャン。</td>
+                            {% endif %}
+                        </tr>
+                        </tbody>
+                    </table>
+                </section>
             </section>
-            <section class="vulnerability_detail">
-                <h2 class="icon">Vulnerability detail</h2>
-                <p><span>これもテストです。</span><br>テストテストテストテストテストテストテストテストテストテストテストテスト。</p>
+
+            <!-- 脆弱性の詳細情報 -->
+            <section id="vulnerability_detail" class="vulnerability_detail">
+                <h2 class="h2_icon">脆弱性詳細（Vulnerability detail）</h2>
+                <p><span>開発者向けの詳細情報です。</span><br>テストテストテストテストテストテストテストテストテストテストテストテスト。</p>
+
+                <section class="vuln_1st_category">
+                    {% if data_poisoning.exist %}
+                    <!-- データ汚染攻撃の詳細情報 -->
+                    <h3 class="h3_icon">データ汚染攻撃（Data Poisoning）</h3>
+                    <p>データ汚染攻撃の概要を３００文字程度で書きます。テストテストテストテストテストテストテストテストテストテストテストテスト。</p>
+                    <section class="vuln_2nd_category">
+                        {% if data_poisoning.fc.exist %}
+                        <h4>Feature Collision Attack</h4>
+                            <p>Feature Collision Attackの概要を３００文字程度で書きます。テストテストテストテストテストテストテストテストテストテストテストテスト。</p>
+                        <ul>
+                            <li>スキャン日時：{{ data_poisoning.fc.date }}</li>
+                            <li>スキャン結果：{{ data_poisoning.fc.consequence }}</li>
+                            <li>脆弱性の再現：{{ data_poisoning.fc.ipynb_path }}</li>
+                            <li>対策　　　　：Feature Collision Attackの対策を１００文字程度で書きます。</li>
+                        </ul>
+                        {% endif %}
+
+                        {% if data_poisoning.cp.exist %}
+                        <h4>Convex Polytope Attack</h4>
+                            <p>Convex Polytope Attackの概要を３００文字程度で書きます。テストテストテストテストテストテストテストテストテストテストテストテスト。</p>
+                        <ul>
+                            <li>スキャン日時：{{ data_poisoning.cp.date }}</li>
+                            <li>スキャン結果：{{ data_poisoning.cp.consequence }}</li>
+                            <li>脆弱性の再現：{{ data_poisoning.cp.ipynb_path }}</li>
+                            <li>対策　　　　：Convex Polytope Attackの対策を１００文字程度で書きます。</li>
+                        </ul>
+                        {% endif %}
+                    </section>
+                    {% endif %}
+
+                    {% if model_poisoning.exist %}
+                    <!-- モデル汚染攻撃の詳細情報 -->
+                    <h3 class="h3_icon">モデル汚染攻撃（Model Poisoning）</h3>
+                    <p>モデル汚染攻撃の概要を３００文字程度で書きます。テストテストテストテストテストテストテストテストテストテストテストテスト。</p>
+                    <section class="vuln_2nd_category">
+                        {% if model_poisoning.node_injection.exist %}
+                        <h4>Node Injection Attack</h4>
+                            <p>Node Injection Attackの概要を３００文字程度で書きます。テストテストテストテストテストテストテストテストテストテストテストテスト。</p>
+                        <ul>
+                            <li>スキャン日時：{{ model_poisoning.node_injection.date }}</li>
+                            <li>スキャン結果：{{ model_poisoning.node_injection.consequence }}</li>
+                            <li>脆弱性の再現：{{ model_poisoning.node_injection.ipynb_path }}</li>
+                            <li>対策　　　　：Node Injection Attackの対策を１００文字程度で書きます。</li>
+                        </ul>
+                        {% endif %}
+
+                        {% if model_poisoning.layer_injection.exist %}
+                        <h4>Malicious Layer Injection Attack</h4>
+                            <p>Malicious Layer Injection Attackの概要を３００文字程度で書きます。テストテストテストテストテストテストテストテストテストテストテストテスト。</p>
+                        <ul>
+                            <li>スキャン日時：{{ model_poisoning.layer_injection.date }}</li>
+                            <li>スキャン結果：{{ model_poisoning.layer_injection.consequence }}</li>
+                            <li>脆弱性の再現：{{ model_poisoning.layer_injection.ipynb_path }}</li>
+                            <li>対策　　　　：Malicious Layer Attackの対策を１００文字程度で書きます。</li>
+                        </ul>
+                        {% endif %}
+                    </section>
+                    {% endif %}
+
+                    {% if evasion.exist %}
+                    <!-- 回避攻撃の詳細情報 -->
+                    <h3 class="h3_icon">回避攻撃（Evasion）</h3>
+                    <p>回避攻撃の概要を３００文字程度で書きます。テストテストテストテストテストテストテストテストテストテストテストテスト。</p>
+                    <section class="vuln_2nd_category">
+                        {% if evasion.fgsm.exist %}
+                        <h4>Fast Gradient Sign Method (FGSM)</h4>
+                            <p>FGSMの概要を３００文字程度で書きます。テストテストテストテストテストテストテストテストテストテストテストテスト。</p>
+                        <ul>
+                            <li>スキャン日時　：{{ evasion.fgsm.date }}</li>
+                            <li>スキャン結果　：{{ evasion.fgsm.consequence }}</li>
+                            <li>脆弱性の再現　：<a href="{{ evasion.fgsm.ipynb_path }}">{{ evasion.fgsm.ipynb_path }}</a></li>
+                            <li>敵対的サンプル：<a href="{{ evasion.fgsm.aes_path }}">{{ evasion.fgsm.aes_path }}</a></li>
+                            <li>対策　　　　：FGSMの対策を１００文字程度で書きます。</li>
+                        </ul>
+                        <p>敵対的サンプルの一例。</p>
+                        <ul class="clearfix aes_list">
+                            <li><img src="{{ evasion.fgsm.ae_img.img1 }}" alt="Adversarial Exmaples #1."></li>
+                            <li><img src="{{ evasion.fgsm.ae_img.img2 }}" alt="Adversarial Exmaples #2."></li>
+                            <li><img src="{{ evasion.fgsm.ae_img.img3 }}" alt="Adversarial Exmaples #3."></li>
+                            <li><img src="{{ evasion.fgsm.ae_img.img4 }}" alt="Adversarial Exmaples #4."></li>
+                            <li><img src="{{ evasion.fgsm.ae_img.img5 }}" alt="Adversarial Exmaples #5."></li>
+                        </ul>
+                        {% endif %}
+
+                        {% if evasion.cnw.exist %}
+                        <h4>Carlini and Wagner Attack (C&W)</h4>
+                            <p>C&Wの概要を３００文字程度で書きます。テストテストテストテストテストテストテストテストテストテストテストテスト。</p>
+                        <ul>
+                            <li>スキャン日時　：{{ evasion.cnw.date }}</li>
+                            <li>スキャン結果　：{{ evasion.cnw.consequence }}</li>
+                            <li>脆弱性の再現　：<a href="{{ evasion.cnw.ipynb_path }}">{{ evasion.cnw.ipynb_path }}</a></li>
+                            <li>敵対的サンプル：<a href="{{ evasion.cnw.aes_path }}">{{ evasion.cnw.aes_path }}</a></li>
+                            <li>対策　　　　　：C&Wの対策を１００文字程度で書きます。</li>
+                        </ul>
+                        <p>敵対的サンプルの一例。</p>
+                        <ul class="clearfix aes_list">
+                            <li><img src="{{ evasion.cnw.ae_img.img1 }}" alt="Adversarial Exmaples #1."></li>
+                            <li><img src="{{ evasion.cnw.ae_img.img2 }}" alt="Adversarial Exmaples #2."></li>
+                            <li><img src="{{ evasion.cnw.ae_img.img3 }}" alt="Adversarial Exmaples #3."></li>
+                            <li><img src="{{ evasion.cnw.ae_img.img4 }}" alt="Adversarial Exmaples #4."></li>
+                            <li><img src="{{ evasion.cnw.ae_img.img5 }}" alt="Adversarial Exmaples #5."></li>
+                        </ul>
+                        {% endif %}
+
+                        {% if evasion.jsma.exist %}
+                        <h4>Jacobian Saliency Map Attack (JSMA)</h4>
+                            <p>JSMAの概要を３００文字程度で書きます。テストテストテストテストテストテストテストテストテストテストテストテスト。</p>
+                        <ul>
+                            <li>スキャン日時　：{{ evasion.jsma.date }}</li>
+                            <li>スキャン結果　：{{ evasion.jsma.consequence }}</li>
+                            <li>脆弱性の再現　：<a href="{{ evasion.jsma.ipynb_path }}">{{ evasion.jsma.ipynb_path }}</a></li>
+                            <li>敵対的サンプル：<a href="{{ evasion.jsma.aes_path }}">{{ evasion.jsma.aes_path }}</a></li>
+                            <li>対策　　　　：JSMAの対策を１００文字程度で書きます。</li>
+                        </ul>
+                        <p>敵対的サンプルの一例。</p>
+                        <ul class="clearfix aes_list">
+                            <li><img src="{{ evasion.jsma.ae_img.img1 }}" alt="Adversarial Exmaples #1."></li>
+                            <li><img src="{{ evasion.jsma.ae_img.img2 }}" alt="Adversarial Exmaples #2."></li>
+                            <li><img src="{{ evasion.jsma.ae_img.img3 }}" alt="Adversarial Exmaples #3."></li>
+                            <li><img src="{{ evasion.jsma.ae_img.img4 }}" alt="Adversarial Exmaples #4."></li>
+                            <li><img src="{{ evasion.jsma.ae_img.img5 }}" alt="Adversarial Exmaples #5."></li>
+                        </ul>
+                        {% endif %}
+                    </section>
+                    {% endif %}
+
+                    {% if exfiltration.exist %}
+                    <!-- 抽出攻撃の詳細情報 -->
+                    <h3 class="h3_icon">抽出攻撃（Exfiltration）</h3>
+                    <p>抽出攻撃の概要を３００文字程度で書きます。テストテストテストテストテストテストテストテストテストテストテストテスト。</p>
+                    <section class="vuln_2nd_category">
+                        {% if exfiltration.mi.exist %}
+                        <h4>Membership Inference Attack</h4>
+                            <p>Membership Inference Attackの概要を３００文字程度で書きます。テストテストテストテストテストテストテストテストテストテストテストテスト。</p>
+                        <ul>
+                            <li>スキャン日時：{{ exfiltration.mi.date }}</li>
+                            <li>スキャン結果：{{ exfiltration.mi.consequence }}</li>
+                            <li>脆弱性の再現：{{ exfiltration.mi.ipynb_path }}</li>
+                            <li>対策　　　　：Membership Inference Attackの対策を１００文字程度で書きます。</li>
+                        </ul>
+                        {% endif %}
+
+                        {% if exfiltration.label_only_mi.exist %}
+                        <h4>Label Only Membership Inference Attack</h4>
+                            <p>Label Only Membership Inference Attackの概要を３００文字程度で書きます。テストテストテストテストテストテストテストテストテストテストテストテスト。</p>
+                        <ul>
+                            <li>スキャン日時：{{ exfiltration.label_only_mi.date }}</li>
+                            <li>スキャン結果：{{ exfiltration.label_only_mi.consequence }}</li>
+                            <li>脆弱性の再現：{{ exfiltration.label_only_mi.ipynb_path }}</li>
+                            <li>対策　　　　：Label Only Membership Inference Attackの対策を１００文字程度で書きます。</li>
+                        </ul>
+                        {% endif %}
+
+                        {% if exfiltration.model_inversion.exist %}
+                        <h4>Model Inversion	Attack</h4>
+                            <p>Model Inversion	Attackの概要を３００文字程度で書きます。テストテストテストテストテストテストテストテストテストテストテストテスト。</p>
+                        <ul>
+                            <li>スキャン日時：{{ exfiltration.model_inversion.date }}</li>
+                            <li>スキャン結果：{{ exfiltration.model_inversion.consequence }}</li>
+                            <li>脆弱性の再現：{{ exfiltration.model_inversion.ipynb_path }}</li>
+                            <li>対策　　　　：Model Inversion Attackの対策を１００文字程度で書きます。</li>
+                        </ul>
+                        {% endif %}
+                    </section>
+                    {% endif %}
+                </section>
             </section>
 
         </div>

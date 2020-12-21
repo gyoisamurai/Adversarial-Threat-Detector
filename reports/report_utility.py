@@ -30,15 +30,35 @@ class ReportUtility:
             self.report_path = os.path.join(self.base_path, config['Report']['report_path'])
             self.report_name = config['Report']['report_name']
             self.template = config['Report']['template_name']
-            self.adv_sample_num = int(config['Report']['adv_sample_num'])
+            self.adv_sample_num = 5
         except Exception as e:
             self.utility.print_message(FAIL, 'Reading config.ini is failure : {}'.format(e))
             self.utility.write_log(40, 'Reading config.ini is failure : {}'.format(e))
             sys.exit(1)
 
-        # Saved list for Adversarial Examples.
-        self.save_adv_list = []
+        # Saved path of Adversarial Examples.
         self.adv_image_path = ''
+
+        # Define report contents.
+        self.template_target = {'model_path': '', 'dataset_path': '', 'label_path': '', 'dataset_num': 0, 'accuracy': '',
+                                'dataset_img': {'img1': '', 'img2': '', 'img3': '', 'img4': '', 'img5': ''}}
+        self.template_data_poisoning = {'exist': False, 'consequence': 'OK', 'summary': '',
+                                        'fc': {'exist': False, 'date': '', 'consequence': '', 'ipynb_path': ''},
+                                        'cp': {'exist': False, 'date': '', 'consequence': '', 'ipynb_path': ''}}
+        self.template_model_poisoning = {'exist': False, 'consequence': 'OK', 'summary': '',
+                                         'node_injection': {'exist': False, 'date': '', 'consequence': '', 'ipynb_path': ''},
+                                         'layer_injection': {'exist': False, 'date': '', 'consequence': '', 'ipynb_path': ''}}
+        self.template_evasion = {'exist': False, 'consequence': 'OK', 'summary': '',
+                                 'fgsm': {'exist': False, 'date': '', 'consequence': 'OK', 'ipynb_path': '', 'aes_path': '',
+                                          'ae_img': {'img1': '', 'img2': '', 'img3': '', 'img4': '', 'img5': ''}},
+                                 'cnw': {'exist': False, 'date': '', 'consequence': 'OK', 'ipynb_path': '', 'aes_path': '',
+                                         'ae_img': {'img1': '', 'img2': '', 'img3': '', 'img4': '', 'img5': ''}},
+                                 'jsma': {'exist': False, 'date': '', 'consequence': 'OK', 'ipynb_path': '', 'aes_path': '',
+                                          'ae_img': {'img1': '', 'img2': '', 'img3': '', 'img4': '', 'img5': ''}}}
+        self.template_exfiltration = {'exist': False, 'consequence': 'OK', 'summary': '',
+                                      'mi': {'exist': False, 'date': '', 'consequence': '', 'ipynb_path': ''},
+                                      'label_only_mi': {'exist': False, 'date': '', 'consequence': '', 'ipynb_path': ''},
+                                      'model_inversion': {'exist': False, 'date': '', 'consequence': '', 'ipynb_path': ''}}
 
     # Make report directory.
     def make_report_dir(self):
@@ -50,5 +70,7 @@ class ReportUtility:
 
     # Make image file for Adversarial Examples.
     def make_image(self, X_adv, method, sampling_idx):
+        save_path_list = []
         for count_idx, adv_idx in enumerate(sampling_idx):
-            self.save_adv_list.append(self.utility.save_adv_images(count_idx, method, X_adv[adv_idx], self.report_path))
+            save_path_list.append(self.utility.save_adv_images(count_idx, method, X_adv[adv_idx], self.adv_image_path))
+        return save_path_list
