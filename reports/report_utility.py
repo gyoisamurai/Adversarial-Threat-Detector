@@ -40,7 +40,8 @@ class ReportUtility:
         self.adv_image_path = ''
 
         # Define report contents.
-        self.template_target = {'model_path': '', 'dataset_path': '', 'label_path': '', 'dataset_num': 0, 'accuracy': '',
+        self.template_target = {'rank': '', 'summary': '', 'model_path': '', 'dataset_path': '', 'label_path': '',
+                                'dataset_num': 0, 'accuracy': '',
                                 'dataset_img': {'img1': '', 'img2': '', 'img3': '', 'img4': '', 'img5': ''}}
         self.template_data_poisoning = {'exist': False, 'consequence': 'OK', 'summary': '',
                                         'fc': {'exist': False, 'date': '', 'consequence': '', 'ipynb_path': ''},

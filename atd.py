@@ -80,14 +80,18 @@ if __name__ == '__main__':
     parser.add_argument('--dataset_name', default='', type=str, help='Dataset name.')
     parser.add_argument('--use_dataset_num', default=100, type=int, help='Dataset number for test.')
     parser.add_argument('--label_name', default='', type=str, help='Label name.')
-    parser.add_argument('--attack_type', default='evasion', choices=['all', 'poisoning', 'evasion', 'exfiltration'],
+    parser.add_argument('--attack_type', default='evasion', choices=['all', 'data_poisoning', 'model_poisoning',
+                                                                     'evasion', 'exfiltration'],
                         type=str, help='Specify attack type.')
-    parser.add_argument('--poisoning_method', default='fc', choices=['fc', 'cp'],
+    parser.add_argument('--data_poisoning_method', default='fc', choices=['fc', 'cp'],
+                        type=str, help='Specify method of Data Poisoning Attack.')
+    parser.add_argument('--model_poisoning_method', default='node_injection',
+                        choices=['node_injection', 'layer_injection'],
                         type=str, help='Specify method of Poisoning Attack.')
     parser.add_argument('--evasion_method', default='fgsm', choices=['all', 'fgsm', 'cnw', 'jsma'],
                         type=str, help='Specify method of Evasion Attack.')
-    parser.add_argument('--exfiltration_method', default='mi', choices=['mi', 'label_only'],
-                        type=str, help="Specify method of Membership Inference Attack.")
+    parser.add_argument('--exfiltration_method', default='mi', choices=['mi', 'label_only', 'inversion'],
+                        type=str, help="Specify method of Exfiltration Attack.")
     args = parser.parse_args()
     print(args)
 
@@ -103,6 +107,8 @@ if __name__ == '__main__':
     report_util.make_report_dir()
     sampling_idx = utility.random_sampling(data_size=len(X_test), sample_num=report_util.adv_sample_num)
     benign_sample_list = report_util.make_image(X_test, 'benign', sampling_idx)
+
+    # Data to report's template.
     report_util.template_target['model_path'] = model_path
     report_util.template_target['dataset_path'] = dataset_path
     report_util.template_target['label_path'] = label_path
@@ -112,7 +118,6 @@ if __name__ == '__main__':
 
     # Scan setting.
     classifier = utility.wrap_classifier(model, X_test)
-    adv_path_list = []
 
     # Accuracy on Benign Examples.
     acc_benign = utility.evaluate(classifier, X_test=X_test, y_test=y_test)
@@ -122,8 +127,11 @@ if __name__ == '__main__':
     # Evaluate all attacks.
     if args.attack_type == 'all':
         utility.print_message(WARNING, 'Not implementation: {}'.format(args.attack_type))
-    # Evaluate Poisoning Attacks.
-    elif args.attack_type == 'poisoning':
+    # Evaluate Data Poisoning Attacks.
+    elif args.attack_type == 'data_poisoning':
+        utility.print_message(WARNING, 'Not implementation: {}'.format(args.attack_type))
+    # Evaluate Model Poisoning Attacks.
+    elif args.attack_type == 'model_poisoning':
         utility.print_message(WARNING, 'Not implementation: {}'.format(args.attack_type))
     # Evaluate Evasion Attacks.
     elif args.attack_type == 'evasion':
@@ -225,8 +233,8 @@ if __name__ == '__main__':
             if acc_benign > acc_jsma:
                 report_util.template_evasion['consequence'] = 'Weak'
                 report_util.template_evasion['jsma']['consequence'] = 'Weak (Benign={}%, AEs={}%)'.format(acc_benign * 100, acc_jsma * 100)
-    # Evaluate Inference Attacks.
-    elif args.attack_type == 'inference':
+    # Evaluate Exfiltration Attacks.
+    elif args.attack_type == 'exfiltration':
         utility.print_message(WARNING, 'Not implementation: {}'.format(args.attack_type))
 
     # Create ipynb report.

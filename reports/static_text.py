@@ -3,6 +3,25 @@
 import enum
 
 
+# Summary.
+class Summary(enum.Enum):
+    # Executive Summary.
+    summary_executive_rank = "非常に脆弱です。"
+    summary_executive_text = "あなたのAIは細工されたデータを受け取った場合、これを攻撃者が意図したクラスに誤分類してしまいます。"
+
+    # Data Poisoning.
+    summary_data_poisoning = "あなたのAIはデータ汚染攻撃に脆弱です。攻撃者は細工したデータをAIの学習データに注入することで、AIの推論を操作することができます。"
+
+    # Data Poisoning.
+    summary_model_poisoning = "あなたのAIはデータ汚染攻撃に脆弱です。攻撃者は細工したデータをAIの学習データに注入することで、AIの推論を操作することができます。"
+
+    # Evasion.
+    summary_evasion = "あなたのAIは回避攻撃に脆弱です。攻撃者は細工した入力データ（敵対的サンプル）をAIに与えることで、入力データを攻撃者の意図したクラスに誤分類させることができます。"
+
+    # Evasion.
+    summary_exfiltration = "あなたのAIは抽出攻撃に脆弱です。攻撃者はAIへの入出力情報を観察することで、AI内部のデータを窃取することができます。"
+
+
 # Common parts.
 class Common(enum.Enum):
     # Title, Introduction.
