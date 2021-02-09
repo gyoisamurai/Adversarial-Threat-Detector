@@ -289,9 +289,9 @@
     </div>
     <nav>
         <ul class="global-nav">
-            <li><a href="scan_report.html#executive_summary">Executive Summary</a></li>
-            <li><a href="scan_report.html#scanned_result">Scanned result</a></li>
-            <li><a href="scan_report.html#vulnerability_detail">Vulnerability detail</a></li>
+            <li><a href="scan_report.html#executive_summary">総評</a></li>
+            <li><a href="scan_report.html#scanned_result">結果概要</a></li>
+            <li><a href="scan_report.html#vulnerability_detail">脆弱性詳細</a></li>
         </ul>
     </nav>
 </header>
@@ -299,43 +299,43 @@
     <div class="content">
         <div class="main-center">
             <h1>ATD Scan Report</h1>
-            <p>Vulnerability Report created by ATD (Adversarial Threat Detector).</p>
+            <p>ATD (Adversarial Threat Detector) のスキャン・レポートです。</p>
             <section id="executive_summary" class="executive_summary clearfix">
                 <div class="summary-txt">
-                    <h2 class="h2_icon">Executive Summary</h2>
+                    <h2 class="h2_icon">総評</h2>
                     <p><span>{{ target.rank }}</span><br>{{ target.summary }}</p>
                 </div>
             </section>
 
             <section id="scanned_result" class="scanned_result">
-                <h2 class="h2_icon">Scanned result</h2>
+                <h2 class="h2_icon">結果概要</h2>
 
                 <section class="target_information">
-                    <h3 class="h3_icon">Target Information</h3>
-                    <p>Basic information about the target model.</p>
+                    <h3 class="h3_icon">基本情報</h3>
+                    <p>スキャン対象モデルの基本情報です。</p>
                     <table class="table_target_info">
                         <tr>
-                            <th>Model path</th>
+                            <th>モデル</th>
                             <td>{{ target.model_path }}</td>
                         </tr>
                         <tr>
-                            <th>Dataset</th>
+                            <th>データセット</th>
                             <td>{{ target.dataset_path }}</td>
                         </tr>
                         <tr>
-                            <th>Dataset num</th>
+                            <th>データ数</th>
                             <td>{{ target.dataset_num }}</td>
                         </tr>
                         <tr>
-                            <th>Inference accuracy</th>
+                            <th>推論精度</th>
                             <td>{{ target.accuracy }}</td>
                         </tr>
                     </table>
                 </section>
 
                 <section class="dataset">
-                    <h3 class="h3_icon">Dataset samples</h3>
-                    <p>Samples of Dataset.</p>
+                    <h3 class="h3_icon">データセット</h3>
+                    <p>データセットの一例を表示します。</p>
                     <ul class="clearfix benign_list">
                         <li><img src="{{ target.dataset_img.img1 }}" alt="Benign sample #1."></li>
                         <li><img src="{{ target.dataset_img.img2 }}" alt="Benign sample #2."></li>
@@ -346,60 +346,60 @@
                 </section>
 
                 <section class="summary">
-                    <h3 class="h3_icon">Summary</h3>
-                    <p>Scan result's list.</p>
+                    <h3 class="h3_icon">結果概要</h3>
+                    <p>スキャン結果一覧です。</p>
                     <table class="table_summary">
                         <thead>
                         <tr>
                             <th>#</th>
-                            <th>Attack Type</th>
-                            <th>Consequence</th>
-                            <th>Summary</th>
+                            <th>攻撃手法</th>
+                            <th>スキャン結果</th>
+                            <th>スキャン結果概要</th>
                         </tr>
                         </thead>
                         <tbody>
                         <tr>
                             <td>1</td>
-                            <td>Data Poisoning</td>
+                            <td>データ汚染攻撃</td>
                             {% if data_poisoning.exist %}
                             <td>{{ data_poisoning.consequence }}</td>
                             <td>{{ data_poisoning.summary }}</td>
                             {% else %}
                             <td>N/A</td>
-                            <td>Not scan.</td>
+                            <td>未スキャン。</td>
                             {% endif %}
                         </tr>
                         <tr>
                             <td>2</td>
-                            <td>Model Poisoning</td>
+                            <td>モデル汚染攻撃</td>
                             {% if model_poisoning.exist %}
                             <td>{{ model_poisoning.consequence }}</td>
                             <td>{{ model_poisoning.summary }}</td>
                             {% else %}
                             <td>N/A</td>
-                            <td>Not scan.</td>
+                            <td>未スキャン。</td>
                             {% endif %}
                         </tr>
                         <tr>
                             <td>3</td>
-                            <td>Evasion</td>
+                            <td>回避攻撃</td>
                             {% if evasion.exist %}
                             <td>{{ evasion.consequence }}</td>
                             <td>{{ evasion.summary }}</td>
                             {% else %}
                             <td>N/A</td>
-                            <td>Not scan.</td>
+                            <td>未スキャン。</td>
                             {% endif %}
                         </tr>
                         <tr>
                             <td>4</td>
-                            <td>Exfiltration</td>
+                            <td>抽出攻撃</td>
                             {% if exfiltration.exist %}
                             <td>{{ exfiltration.consequence }}</td>
                             <td>{{ exfiltration.summary }}</td>
                             {% else %}
                             <td>N/A</td>
-                            <td>Not scan.</td>
+                            <td>未スキャン。</td>
                             {% endif %}
                         </tr>
                         </tbody>
@@ -409,35 +409,34 @@
 
             <!-- 脆弱性の詳細情報 -->
             <section id="vulnerability_detail" class="vulnerability_detail">
-                <h2 class="h2_icon">Vulnerability detail</h2>
-                <p><span>This is the detail information for developer.</span><br>Please take countermeasures based on the following vulnerability information.</p>
+                <h2 class="h2_icon">脆弱性詳細</h2>
+                <p><span>開発者向けの詳細情報です。</span><br>以下の脆弱性情報を基に、対策を行ってください。</p>
 
                 <section class="vuln_1st_category">
                     {% if data_poisoning.exist %}
                     <!-- データ汚染攻撃の詳細情報 -->
-                    <h3 class="h3_icon">Data Poisoning</h3>
-                    <p>Data Poisoning attack is an attack that embeds a "backdoor" into the target classifier.</p>
-                    <p><b>The backdoor</b> causes the input data known only to the adversary (Trigger) to misclassify it into the class intended by the adversary. The adversary injects the poison data into the target classifier's train data. If the target classifier trains on the poisoned train data, then the decision boundary of the target classifier is distorted by the poison data.</p>
+                    <h3 class="h3_icon">データ汚染攻撃</h3>
+                    <p>データ汚染攻撃はAIにバックドアを設置する攻撃です。<br>攻撃者が標的AIの学習データに細工データを注入し、これを学習させることで、特定の入力データ（トリガー）を攻撃者が意図したクラスに誤分類するように決定境界が歪められます。</p>
                     <section class="vuln_2nd_category">
                         {% if data_poisoning.fc.exist %}
                         <h4>Feature Collision Attack</h4>
-                            <p>Feature Collision Attack is a Perfect-knowledge attack that injects poison data that features approximate the Trigger into the train data of a target classifier.</p>
+                            <p>Feature Collision Attackの概要を３００文字程度で書きます。</p>
                         <ul>
-                            <li>Scan Date : {{ data_poisoning.fc.date }}</li>
-                            <li>Consequence : {{ data_poisoning.fc.consequence }}</li>
-                            <li>Replay's ipynb : {{ data_poisoning.fc.ipynb_path }}</li>
-                            <li>Countermeasure : {{ data_poisoning.fc.countermeasure }}</li>
+                            <li>スキャン日時：{{ data_poisoning.fc.date }}</li>
+                            <li>スキャン結果：{{ data_poisoning.fc.consequence }}</li>
+                            <li>脆弱性の再現：{{ data_poisoning.fc.ipynb_path }}</li>
+                            <li>対策　　　　：Feature Collision Attackの対策を１００文字程度で書きます。</li>
                         </ul>
                         {% endif %}
 
                         {% if data_poisoning.cp.exist %}
                         <h4>Convex Polytope Attack</h4>
-                            <p>Convex Polytope Attack is a Zero-knowledge attack that poisoned train data of a target classifier so that the feature vector of the trigger lies within the convex polytope of the feature vectors of multiple poison data.</p>
+                            <p>Convex Polytope Attackの概要を３００文字程度で書きます。</p>
                         <ul>
-                            <li>Scan Date : {{ data_poisoning.cp.date }}</li>
-                            <li>Consequence : {{ data_poisoning.cp.consequence }}</li>
-                            <li>Replay's ipynb : {{ data_poisoning.cp.ipynb_path }}</li>
-                            <li>Countermeasure : {{ data_poisoning.cp.countermeasure }}</li>
+                            <li>スキャン日時：{{ data_poisoning.cp.date }}</li>
+                            <li>スキャン結果：{{ data_poisoning.cp.consequence }}</li>
+                            <li>脆弱性の再現：{{ data_poisoning.cp.ipynb_path }}</li>
+                            <li>対策　　　　：Convex Polytope Attackの対策を１００文字程度で書きます。</li>
                         </ul>
                         {% endif %}
                     </section>
@@ -445,30 +444,28 @@
 
                     {% if model_poisoning.exist %}
                     <!-- モデル汚染攻撃の詳細情報 -->
-                    <h3 class="h3_icon">Model Poisoning</h3>
-                    <p>Model Poisoning attack is an attack that embeds a "backdoor" and "malicious layers" into the target classifier.</p>
-                    <p><b>The backdoor</b> causes the input data known only to the adversary (Trigger) to misclassify it into the class intended by the adversary. The adversary injects the Trojan Nodes into the hidden layers of the pre-trained model and distributes it to victim users. If victim user develop classifier using the pre-trained model injected the Trojan Nodes, then the decision boundary of the classifier is distorted by the Trojan nodes.</p>
-                    <p><b>The malicious layers</b> execute the system commands intended by the adversary on the system operating the classifier. The adversary injects the layers describing arbitrary system commands (e.g. Lambda layer of TensorFlow) into the pre-trained model and distributes it to the victim users. If the victim users develop classifier using the pre-training model, the malicious layers execute the malicious system commands on the system operating the classifier.</p>
+                    <h3 class="h3_icon">モデル汚染攻撃</h3>
+                    <p>モデル汚染攻撃の概要を３００文字程度で書きます。テストテストテストテストテストテストテストテストテストテストテストテスト。</p>
                     <section class="vuln_2nd_category">
                         {% if model_poisoning.node_injection.exist %}
                         <h4>Node Injection Attack</h4>
-                            <p>Node Injection Attack is an attack that injects a Trojan Nodes into a pre-trained model that causes the Trigger to misclassify into the class intended by the adversary.</p>
+                            <p>Node Injection Attackの概要を３００文字程度で書きます。テストテストテストテストテストテストテストテストテストテストテストテスト。</p>
                         <ul>
-                            <li>Scan Date : {{ model_poisoning.node_injection.date }}</li>
-                            <li>Consequence : {{ model_poisoning.node_injection.consequence }}</li>
-                            <li>Replay's ipynb : {{ model_poisoning.node_injection.ipynb_path }}</li>
-                            <li>Countermeasure : {{ model_poisoning.node_injection.countermeasure }}</li>
+                            <li>スキャン日時：{{ model_poisoning.node_injection.date }}</li>
+                            <li>スキャン結果：{{ model_poisoning.node_injection.consequence }}</li>
+                            <li>脆弱性の再現：{{ model_poisoning.node_injection.ipynb_path }}</li>
+                            <li>対策　　　　：Node Injection Attackの対策を１００文字程度で書きます。</li>
                         </ul>
                         {% endif %}
 
                         {% if model_poisoning.layer_injection.exist %}
                         <h4>Malicious Layer Injection Attack</h4>
-                            <p>Malicious Layer Injection Attack is an attack that injects layers that executes malicious system commands into a pre-trained model. If target classifier infers, then malicious system commands to be executed on the system operating the target classifier.</p>
+                            <p>Malicious Layer Injection Attackの概要を３００文字程度で書きます。テストテストテストテストテストテストテストテストテストテストテストテスト。</p>
                         <ul>
-                            <li>Scan Date : {{ model_poisoning.layer_injection.date }}</li>
-                            <li>Consequence : {{ model_poisoning.layer_injection.consequence }}</li>
-                            <li>Replay's ipynb : {{ model_poisoning.layer_injection.ipynb_path }}</li>
-                            <li>Countermeasure : {{ model_poisoning.layer_injection.countermeasure }}</li>
+                            <li>スキャン日時：{{ model_poisoning.layer_injection.date }}</li>
+                            <li>スキャン結果：{{ model_poisoning.layer_injection.consequence }}</li>
+                            <li>脆弱性の再現：{{ model_poisoning.layer_injection.ipynb_path }}</li>
+                            <li>対策　　　　：Malicious Layer Attackの対策を１００文字程度で書きます。</li>
                         </ul>
                         {% endif %}
                     </section>
@@ -476,20 +473,20 @@
 
                     {% if evasion.exist %}
                     <!-- 回避攻撃の詳細情報 -->
-                    <h3 class="h3_icon">Evasion</h3>
-                    <p>The Evasion Attack is an attack that causes the target classifier to misclassify the Adversarial Examples into the class intended by the adversary.</p>
-                    <p>The adversary perturbs the input data to the classifier to create a Adversarial Examples. If the adversary inputs the Adversarial Examples to the target classifier, then the target classifier misclassify it into the class intended by the adversary.</p>
+                    <h3 class="h3_icon">回避攻撃</h3>
+                    <p>回避攻撃はAIの誤分類を誘発する攻撃です。<br>攻撃者がAIへの入力データに微小な変化（摂動）を加えることで、AIの分類を誤らせることができます。なお、回避攻撃には、入力データを特定のクラスに誤分類させる「標的型」と、任意のクラスに誤分類させる「非標的型」があります。</p>
                     <section class="vuln_2nd_category">
                         {% if evasion.fgsm.exist %}
                         <h4>Fast Gradient Sign Method (FGSM)</h4>
-                            <p>FGSM uses the gradient of the target classifier to create Adversarial Examples. In the case of images, FGSM uses the gradient of the loss function for the input image and adds perturbations into the image to maximize the loss.</p>
+                            <p>FGSMの概要を３００文字程度で書きます。</p>
                         <ul>
-                            <li>Scan Date : {{ evasion.fgsm.date }}</li>
-                            <li>Consequence : {{ evasion.fgsm.consequence }}</li>
-                            <li>Replay's ipynb : {{ evasion.fgsm.ipynb_path }}</li>
-                            <li>Countermeasure : {{ evasion.fgsm.countermeasure }}</li>
+                            <li>スキャン日時　：{{ evasion.fgsm.date }}</li>
+                            <li>スキャン結果　：{{ evasion.fgsm.consequence }}</li>
+                            <li>脆弱性の再現　：<a href="{{ evasion.fgsm.ipynb_path }}">{{ evasion.fgsm.ipynb_path }}</a></li>
+                            <li>敵対的サンプル：<a href="{{ evasion.fgsm.aes_path }}">{{ evasion.fgsm.aes_path }}</a></li>
+                            <li>対策　　　　：FGSMの対策を１００文字程度で書きます。</li>
                         </ul>
-                        <p>Adversarial Examples</p>
+                        <p>敵対的サンプルの一例。</p>
                         <ul class="clearfix aes_list">
                             <li><img src="{{ evasion.fgsm.ae_img.img1 }}" alt="Adversarial Exmaples #1."></li>
                             <li><img src="{{ evasion.fgsm.ae_img.img2 }}" alt="Adversarial Exmaples #2."></li>
@@ -497,21 +494,19 @@
                             <li><img src="{{ evasion.fgsm.ae_img.img4 }}" alt="Adversarial Exmaples #4."></li>
                             <li><img src="{{ evasion.fgsm.ae_img.img5 }}" alt="Adversarial Exmaples #5."></li>
                         </ul>
-                        <ul>
-                            <li>AEs Path : {{ evasion.fgsm.aes_path }}</li>
-                        </ul>
                         {% endif %}
 
                         {% if evasion.cnw.exist %}
                         <h4>Carlini and Wagner Attack (C&W)</h4>
-                            <p>The Carlini and Wagner attack uses a L2 norm of the target classifier to create targeted Adversarial Examples.</p>
+                            <p>C&Wの概要を３００文字程度で書きます。</p>
                         <ul>
-                            <li>Scan Date : {{ evasion.cnw.date }}</li>
-                            <li>Consequence : {{ evasion.cnw.consequence }}</li>
-                            <li>Replay's ipynb : {{ evasion.cnw.ipynb_path }}</li>
-                            <li>Countermeasure : {{ evasion.cnw.countermeasure }}</li>
+                            <li>スキャン日時　：{{ evasion.cnw.date }}</li>
+                            <li>スキャン結果　：{{ evasion.cnw.consequence }}</li>
+                            <li>脆弱性の再現　：<a href="{{ evasion.cnw.ipynb_path }}">{{ evasion.cnw.ipynb_path }}</a></li>
+                            <li>敵対的サンプル：<a href="{{ evasion.cnw.aes_path }}">{{ evasion.cnw.aes_path }}</a></li>
+                            <li>対策　　　　　：C&Wの対策を１００文字程度で書きます。</li>
                         </ul>
-                        <p>Adversarial Examples</p>
+                        <p>敵対的サンプルの一例。</p>
                         <ul class="clearfix aes_list">
                             <li><img src="{{ evasion.cnw.ae_img.img1 }}" alt="Adversarial Exmaples #1."></li>
                             <li><img src="{{ evasion.cnw.ae_img.img2 }}" alt="Adversarial Exmaples #2."></li>
@@ -519,21 +514,19 @@
                             <li><img src="{{ evasion.cnw.ae_img.img4 }}" alt="Adversarial Exmaples #4."></li>
                             <li><img src="{{ evasion.cnw.ae_img.img5 }}" alt="Adversarial Exmaples #5."></li>
                         </ul>
-                        <ul>
-                            <li>AEs Path : {{ evasion.cnw.aes_path }}</li>
-                        </ul>
                         {% endif %}
 
                         {% if evasion.jsma.exist %}
                         <h4>Jacobian Saliency Map Attack (JSMA)</h4>
-                            <p>JSMA is to makes optimal mini-scale changes to input data until the classifier is fooled or a maximum number of changes is met.</p>
+                            <p>JSMAの概要を３００文字程度で書きます。</p>
                         <ul>
-                            <li>Scan Date : {{ evasion.jsma.date }}</li>
-                            <li>Consequence : {{ evasion.jsma.consequence }}</li>
-                            <li>Replay's ipynb : {{ evasion.jsma.ipynb_path }}</li>
-                            <li>Countermeasure : {{ evasion.jsma.countermeasure }}</li>
+                            <li>スキャン日時　：{{ evasion.jsma.date }}</li>
+                            <li>スキャン結果　：{{ evasion.jsma.consequence }}</li>
+                            <li>脆弱性の再現　：<a href="{{ evasion.jsma.ipynb_path }}">{{ evasion.jsma.ipynb_path }}</a></li>
+                            <li>敵対的サンプル：<a href="{{ evasion.jsma.aes_path }}">{{ evasion.jsma.aes_path }}</a></li>
+                            <li>対策　　　　：JSMAの対策を１００文字程度で書きます。</li>
                         </ul>
-                        <p>Adversarial Examples</p>
+                        <p>敵対的サンプルの一例。</p>
                         <ul class="clearfix aes_list">
                             <li><img src="{{ evasion.jsma.ae_img.img1 }}" alt="Adversarial Exmaples #1."></li>
                             <li><img src="{{ evasion.jsma.ae_img.img2 }}" alt="Adversarial Exmaples #2."></li>
@@ -541,48 +534,45 @@
                             <li><img src="{{ evasion.jsma.ae_img.img4 }}" alt="Adversarial Exmaples #4."></li>
                             <li><img src="{{ evasion.jsma.ae_img.img5 }}" alt="Adversarial Exmaples #5."></li>
                         </ul>
-                        <ul>
-                            <li>AEs Path : {{ evasion.jsma.aes_path }}</li>
-                        </ul>
                         {% endif %}
                     </section>
                     {% endif %}
 
                     {% if exfiltration.exist %}
                     <!-- 抽出攻撃の詳細情報 -->
-                    <h3 class="h3_icon">Exfiltration</h3>
-                    <p>Extraction is an attack that steals the parameters and train data of a target classifier.</p>
+                    <h3 class="h3_icon">抽出攻撃</h3>
+                    <p>抽出攻撃の概要を３００文字程度で書きます。</p>
                     <section class="vuln_2nd_category">
                         {% if exfiltration.mi.exist %}
                         <h4>Membership Inference Attack</h4>
-                            <p>Membership Inference Attack is an attack that the adversary infers the train data of the target classifier based on the input data and responses (classification labels and confidence values) to the target classifier.</p>
+                            <p>Membership Inference Attackの概要を３００文字程度で書きます。テストテストテストテストテストテストテストテストテストテストテストテスト。</p>
                         <ul>
-                            <li>Scan Date : {{ exfiltration.mi.date }}</li>
-                            <li>Consequence : {{ exfiltration.mi.consequence }}</li>
-                            <li>Replay's ipynb : {{ exfiltration.mi.ipynb_path }}</li>
-                            <li>Countermeasure : {{ exfiltration.mi.countermeasure }}</li>
+                            <li>スキャン日時：{{ exfiltration.mi.date }}</li>
+                            <li>スキャン結果：{{ exfiltration.mi.consequence }}</li>
+                            <li>脆弱性の再現：{{ exfiltration.mi.ipynb_path }}</li>
+                            <li>対策　　　　：Membership Inference Attackの対策を１００文字程度で書きます。</li>
                         </ul>
                         {% endif %}
 
                         {% if exfiltration.label_only_mi.exist %}
                         <h4>Label Only Membership Inference Attack</h4>
-                            <p>Label Only Membership Inference Attack is an attack that the adversary infers the train data of the target classifier based on the input data and response (classification labels) to the target classifier.</p>
+                            <p>Label Only Membership Inference Attackの概要を３００文字程度で書きます。テストテストテストテストテストテストテストテストテストテストテストテスト。</p>
                         <ul>
-                            <li>Scan Date : {{ exfiltration.label_only_mi.date }}</li>
-                            <li>Consequence : {{ exfiltration.label_only_mi.consequence }}</li>
-                            <li>Replay's ipynb : {{ exfiltration.label_only_mi.ipynb_path }}</li>
-                            <li>Countermeasure : {{ exfiltration.label_only_mi.countermeasure }}</li>
+                            <li>スキャン日時：{{ exfiltration.label_only_mi.date }}</li>
+                            <li>スキャン結果：{{ exfiltration.label_only_mi.consequence }}</li>
+                            <li>脆弱性の再現：{{ exfiltration.label_only_mi.ipynb_path }}</li>
+                            <li>対策　　　　：Label Only Membership Inference Attackの対策を１００文字程度で書きます。</li>
                         </ul>
                         {% endif %}
 
                         {% if exfiltration.model_inversion.exist %}
                         <h4>Model Inversion	Attack</h4>
-                            <p>Model extraction attack is an attack in that an adversary infers the decision boundary of a target classifier based on the input data and responses (classification labels and confidence values) to the target classifier.</p>
+                            <p>Model Inversion	Attackの概要を３００文字程度で書きます。テストテストテストテストテストテストテストテストテストテストテストテスト。</p>
                         <ul>
-                            <li>Scan Date : {{ exfiltration.model_inversion.date }}</li>
-                            <li>Consequence : {{ exfiltration.model_inversion.consequence }}</li>
-                            <li>Replay's ipynb : {{ exfiltration.model_inversion.ipynb_path }}</li>
-                            <li>Countermeasure : {{ exfiltration.model_inversion.countermeasure }}</li>
+                            <li>スキャン日時：{{ exfiltration.model_inversion.date }}</li>
+                            <li>スキャン結果：{{ exfiltration.model_inversion.consequence }}</li>
+                            <li>脆弱性の再現：{{ exfiltration.model_inversion.ipynb_path }}</li>
+                            <li>対策　　　　：Model Inversion Attackの対策を１００文字程度で書きます。</li>
                         </ul>
                         {% endif %}
                     </section>
@@ -595,7 +585,7 @@
 </div>
 
 <footer>
-    <small>©2021- Mitsui Bussan Secure Directions, Inc. All rights reserved.</small>
+    <small>©2020- Mitsui Bussan Secure Directions, Inc. All rights reserved.</small>
 </footer>
 </body>
 </html>

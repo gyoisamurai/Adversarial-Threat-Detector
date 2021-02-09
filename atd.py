@@ -92,6 +92,7 @@ if __name__ == '__main__':
                         type=str, help='Specify method of Evasion Attack.')
     parser.add_argument('--exfiltration_method', default='mi', choices=['mi', 'label_only', 'inversion'],
                         type=str, help="Specify method of Exfiltration Attack.")
+    parser.add_argument('--lang', default='en', choices=['en', 'ja'], type=str, help='Specify language of report.')
     args = parser.parse_args()
     print(args)
 
