@@ -5,10 +5,11 @@
 
 ATDは「脆弱性の発見（Scanning & Detection）」→「開発者の脆弱性の理解（Understand）」→「脆弱性の修正（Fix）」→「修正確認（Re-Scanning）」のサイクルを回すことで、あなたの分類器の安全確保に貢献します。  
 
+##### ATDのセキュア・サイクル
 <div align="center">
   <center>
   <img src="./img/atd_concept.jpg" width="400">
-  <figcaption><b>ATDサイクル</b></figcaption>
+  <figcaption><b></b></figcaption>
   </center>
   <br>
 </div>

@@ -5,10 +5,11 @@
 
 ATD contributes to the security of your classifier by executing the four cycles of "Detecting vulnerabilities (Scanning & Detection)", "Understanding vulnerabilities (Understanding)", "Fixing vulnerabilities (Fix)", and "Check fixed vulnerabilities (Re-Scanning)".  
 
+##### ATD's secure cycle.  
 <div align="center">
   <center>
   <img src="./img/atd_concept.jpg" width="400">
-  <figcaption><b>ATD's secure cycle.</b></figcaption>
+  <figcaption><b></b></figcaption>
   </center>
   <br>
 </div>
@@ -28,7 +29,7 @@ ATD automatically executes a variety of attacks against the classifier and detec
   <br>
 </div>
 
-#### 2. 脆弱性の理解（Understanding）  
+#### 2. Understanding vulnerabilities (Understanding)  
 When a vulnerability is detected, **ATD will generate a countermeasure report (HTML style) and a replay environment (ipynb style) of the vulnerabilities**. Developers can understand the vulnerabilities by referring to the countermeasure report and the replay environment.  
 
 * Countermeasure report (HTML style)  
