@@ -1,9 +1,15 @@
 # Adversarial-Threat-Detector
 [Japanese page](./README_ja.md)  
 
-**Adversarial Threat Detector (a.k.a. ATD) is a scanner for detecting vulnerabilities in deep learning-based classifiers**.  
+In recent years, deep learning technology has been developing, and various systems using deep learning are spreading in our society, such as face recognition, security cameras (anomaly detection), and ADAS (Advanced Driver-Assistance Systems).  
+
+On the other hand, there are many attacks that exploit vulnerabilities in deep learning algorithms. For example, the Evasion Attacks are an attack that causes the target classifier to misclassify the Adversarial Examples into the class intended by the adversary. the Exfiltration Attacks are an attack that steals the parameters and train data of a target classifier. If your system is vulnerable to these attacks, it can lead to serious incidents such as face recognition being breached, allowing unauthorized intrusion, or information leakage due to inference of train data.  
+
+So we released a vulnerability scanner called **"Adversarial Threat Detector" (a.k.a. ATD), which automatically detects vulnerabilities in deep learning based classifiers**.  
 
 ATD contributes to the security of your classifier by executing the four cycles of "Detecting vulnerabilities (Scanning & Detection)", "Understanding vulnerabilities (Understanding)", "Fixing vulnerabilities (Fix)", and "Check fixed vulnerabilities (Re-Scanning)".  
+
+ATD is following the [Adversarial Threat Matrix](https://github.com/mitre/advmlthreatmatrix), which summarizes threats to machine learning systems. And currently, ATD uses the [Adversarial Robustness Toolbox (ART)](https://github.com/Trusted-AI/adversarial-robustness-toolbox), a security library for machine learning, as its core engine. Currently ATD is beta version, but we will release new functions once a month, so please check our release information.  
 
 ##### ATD's secure cycle.  
 <div align="center">
