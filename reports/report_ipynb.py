@@ -26,6 +26,9 @@ class IpynbReport:
         self.root_path = os.path.join(self.full_path, '../')
         config.read(os.path.join(self.root_path, 'config.ini'))
 
+        # Language for report.
+        self.lang = ''
+
         # model/dataset path.
         self.model_path = ''
         self.dataset_path = ''
@@ -36,32 +39,61 @@ class IpynbReport:
     def create_common(self, nb):
         self.utility.print_message(OK, 'Creating common part...')
         # Introduction.
-        nb['cells'] = [
-            nbformat.v4.new_markdown_cell(Common.md_report_title.value),
-            nbformat.v4.new_markdown_cell(Common.md_1_1_title.value),
-            nbformat.v4.new_markdown_cell(Common.md_1_1_text.value),
-            nbformat.v4.new_markdown_cell(Common.md_1_2_title.value),
-            nbformat.v4.new_markdown_cell(Common.md_1_2_text.value)
-        ]
+        if self.lang == 'en':
+            nb['cells'] = [
+                nbformat.v4.new_markdown_cell(Common.md_report_title.value),
+                nbformat.v4.new_markdown_cell(Common.md_1_1_title.value),
+                nbformat.v4.new_markdown_cell(Common.md_1_1_text.value),
+                nbformat.v4.new_markdown_cell(Common.md_1_2_title.value),
+                nbformat.v4.new_markdown_cell(Common.md_1_2_text.value)
+            ]
+        else:
+            nb['cells'] = [
+                nbformat.v4.new_markdown_cell(Common.md_report_title.value),
+                nbformat.v4.new_markdown_cell(Common.md_1_1_title_ja.value),
+                nbformat.v4.new_markdown_cell(Common.md_1_1_text_ja.value),
+                nbformat.v4.new_markdown_cell(Common.md_1_2_title_ja.value),
+                nbformat.v4.new_markdown_cell(Common.md_1_2_text_ja.value)
+            ]
 
         # Preparation
-        nb['cells'].extend([nbformat.v4.new_markdown_cell(Common.md_2_title.value),
-                            nbformat.v4.new_markdown_cell(Common.md_2_text.value),
-                            nbformat.v4.new_markdown_cell(Common.md_2_1_title.value),
-                            nbformat.v4.new_markdown_cell(Common.md_2_1_text.value),
-                            nbformat.v4.new_code_cell(Common.cd_2_1_code.value),
-                            nbformat.v4.new_markdown_cell(Common.md_2_2_title.value),
-                            nbformat.v4.new_markdown_cell(Common.md_2_2_text.value),
-                            nbformat.v4.new_code_cell(Common.cd_2_2_code.value.format(self.dataset_path,
-                                                                                      self.dataset_num,
-                                                                                      self.label_path)),
-                            nbformat.v4.new_markdown_cell(Common.md_2_3_title.value),
-                            nbformat.v4.new_markdown_cell(Common.md_2_3_text.value),
-                            nbformat.v4.new_code_cell(Common.cd_2_3_code.value.format(self.model_path)),
-                            nbformat.v4.new_markdown_cell(Common.md_2_4_title.value),
-                            nbformat.v4.new_markdown_cell(Common.md_2_4_text.value),
-                            nbformat.v4.new_code_cell(Common.cd_2_4_code.value),
-                            ])
+        if self.lang == 'en':
+            nb['cells'].extend([nbformat.v4.new_markdown_cell(Common.md_2_title.value),
+                                nbformat.v4.new_markdown_cell(Common.md_2_text.value),
+                                nbformat.v4.new_markdown_cell(Common.md_2_1_title.value),
+                                nbformat.v4.new_markdown_cell(Common.md_2_1_text.value),
+                                nbformat.v4.new_code_cell(Common.cd_2_1_code.value),
+                                nbformat.v4.new_markdown_cell(Common.md_2_2_title.value),
+                                nbformat.v4.new_markdown_cell(Common.md_2_2_text.value),
+                                nbformat.v4.new_code_cell(Common.cd_2_2_code.value.format(self.dataset_path,
+                                                                                          self.dataset_num,
+                                                                                          self.label_path)),
+                                nbformat.v4.new_markdown_cell(Common.md_2_3_title.value),
+                                nbformat.v4.new_markdown_cell(Common.md_2_3_text.value),
+                                nbformat.v4.new_code_cell(Common.cd_2_3_code.value.format(self.model_path)),
+                                nbformat.v4.new_markdown_cell(Common.md_2_4_title.value),
+                                nbformat.v4.new_markdown_cell(Common.md_2_4_text.value),
+                                nbformat.v4.new_code_cell(Common.cd_2_4_code.value),
+                                ])
+        else:
+            nb['cells'].extend([nbformat.v4.new_markdown_cell(Common.md_2_title_ja.value),
+                                nbformat.v4.new_markdown_cell(Common.md_2_text_ja.value),
+                                nbformat.v4.new_markdown_cell(Common.md_2_1_title_ja.value),
+                                nbformat.v4.new_markdown_cell(Common.md_2_1_text_ja.value),
+                                nbformat.v4.new_code_cell(Common.cd_2_1_code_ja.value),
+                                nbformat.v4.new_markdown_cell(Common.md_2_2_title_ja.value),
+                                nbformat.v4.new_markdown_cell(Common.md_2_2_text_ja.value),
+                                nbformat.v4.new_code_cell(Common.cd_2_2_code_ja.value.format(self.dataset_path,
+                                                                                             self.dataset_num,
+                                                                                             self.label_path)),
+                                nbformat.v4.new_markdown_cell(Common.md_2_3_title_ja.value),
+                                nbformat.v4.new_markdown_cell(Common.md_2_3_text_ja.value),
+                                nbformat.v4.new_code_cell(Common.cd_2_3_code_ja.value.format(self.model_path)),
+                                nbformat.v4.new_markdown_cell(Common.md_2_4_title_ja.value),
+                                nbformat.v4.new_markdown_cell(Common.md_2_4_text_ja.value),
+                                nbformat.v4.new_code_cell(Common.cd_2_4_code_ja.value),
+                                ])
+
         self.utility.print_message(OK, 'Done creating common part.')
         return nb
 
@@ -70,23 +102,43 @@ class IpynbReport:
         self.utility.print_message(OK, 'Creating Evasion (FGSM) part...')
 
         # FGSM.
-        nb['cells'].extend([nbformat.v4.new_markdown_cell(EvasionAttack.md_ae_title.value),
-                            nbformat.v4.new_markdown_cell(EvasionAttack.md_ae_text.value),
-                            nbformat.v4.new_markdown_cell(EvasionAttack.md_ae_fgsm_1_title.value),
-                            nbformat.v4.new_markdown_cell(EvasionAttack.md_ae_fgsm_1_text.value),
-                            nbformat.v4.new_markdown_cell(EvasionAttack.md_ae_fgsm_2_title.value),
-                            nbformat.v4.new_code_cell(EvasionAttack.cd_ae_fgsm_2_code.value.format(aes_path)),
-                            nbformat.v4.new_markdown_cell(EvasionAttack.md_ae_fgsm_3_title.value),
-                            nbformat.v4.new_code_cell(EvasionAttack.cd_ae_fgsm_3_code.value.format(self.dataset_num)),
-                            nbformat.v4.new_markdown_cell(EvasionAttack.md_ae_fgsm_4_title.value),
-                            nbformat.v4.new_code_cell(EvasionAttack.cd_ae_fgsm_4_code.value),
-                            nbformat.v4.new_markdown_cell(EvasionAttack.md_ae_fgsm_5_title.value),
-                            nbformat.v4.new_code_cell(EvasionAttack.cd_ae_fgsm_5_code.value),
-                            nbformat.v4.new_markdown_cell(EvasionAttack.md_ae_fgsm_6_title.value),
-                            nbformat.v4.new_code_cell(EvasionAttack.cd_ae_fgsm_6_code.value),
-                            nbformat.v4.new_markdown_cell(EvasionAttack.md_ae_fgsm_7_title.value),
-                            nbformat.v4.new_markdown_cell(EvasionAttack.md_ae_fgsm_7_text.value),
-                            ])
+        if self.lang == 'en':
+            nb['cells'].extend([nbformat.v4.new_markdown_cell(EvasionAttack.md_ae_title.value),
+                                nbformat.v4.new_markdown_cell(EvasionAttack.md_ae_text.value),
+                                nbformat.v4.new_markdown_cell(EvasionAttack.md_ae_fgsm_1_title.value),
+                                nbformat.v4.new_markdown_cell(EvasionAttack.md_ae_fgsm_1_text.value),
+                                nbformat.v4.new_markdown_cell(EvasionAttack.md_ae_fgsm_2_title.value),
+                                nbformat.v4.new_code_cell(EvasionAttack.cd_ae_fgsm_2_code.value.format(aes_path)),
+                                nbformat.v4.new_markdown_cell(EvasionAttack.md_ae_fgsm_3_title.value),
+                                nbformat.v4.new_code_cell(EvasionAttack.cd_ae_fgsm_3_code.value.format(self.dataset_num)),
+                                nbformat.v4.new_markdown_cell(EvasionAttack.md_ae_fgsm_4_title.value),
+                                nbformat.v4.new_code_cell(EvasionAttack.cd_ae_fgsm_4_code.value),
+                                nbformat.v4.new_markdown_cell(EvasionAttack.md_ae_fgsm_5_title.value),
+                                nbformat.v4.new_code_cell(EvasionAttack.cd_ae_fgsm_5_code.value),
+                                nbformat.v4.new_markdown_cell(EvasionAttack.md_ae_fgsm_6_title.value),
+                                nbformat.v4.new_code_cell(EvasionAttack.cd_ae_fgsm_6_code.value),
+                                nbformat.v4.new_markdown_cell(EvasionAttack.md_ae_fgsm_7_title.value),
+                                nbformat.v4.new_markdown_cell(EvasionAttack.md_ae_fgsm_7_text.value),
+                                ])
+        else:
+            nb['cells'].extend([nbformat.v4.new_markdown_cell(EvasionAttack.md_ae_title_ja.value),
+                                nbformat.v4.new_markdown_cell(EvasionAttack.md_ae_text_ja.value),
+                                nbformat.v4.new_markdown_cell(EvasionAttack.md_ae_fgsm_1_title_ja.value),
+                                nbformat.v4.new_markdown_cell(EvasionAttack.md_ae_fgsm_1_text_ja.value),
+                                nbformat.v4.new_markdown_cell(EvasionAttack.md_ae_fgsm_2_title_ja.value),
+                                nbformat.v4.new_code_cell(EvasionAttack.cd_ae_fgsm_2_code_ja.value.format(aes_path)),
+                                nbformat.v4.new_markdown_cell(EvasionAttack.md_ae_fgsm_3_title_ja.value),
+                                nbformat.v4.new_code_cell(
+                                    EvasionAttack.cd_ae_fgsm_3_code_ja.value.format(self.dataset_num)),
+                                nbformat.v4.new_markdown_cell(EvasionAttack.md_ae_fgsm_4_title_ja.value),
+                                nbformat.v4.new_code_cell(EvasionAttack.cd_ae_fgsm_4_code_ja.value),
+                                nbformat.v4.new_markdown_cell(EvasionAttack.md_ae_fgsm_5_title_ja.value),
+                                nbformat.v4.new_code_cell(EvasionAttack.cd_ae_fgsm_5_code_ja.value),
+                                nbformat.v4.new_markdown_cell(EvasionAttack.md_ae_fgsm_6_title_ja.value),
+                                nbformat.v4.new_code_cell(EvasionAttack.cd_ae_fgsm_6_code_ja.value),
+                                nbformat.v4.new_markdown_cell(EvasionAttack.md_ae_fgsm_7_title_ja.value),
+                                nbformat.v4.new_markdown_cell(EvasionAttack.md_ae_fgsm_7_text_ja.value),
+                                ])
 
         self.utility.print_message(OK, 'Done Evasion (FGSM) part...')
         return nb

@@ -240,6 +240,7 @@ if __name__ == '__main__':
 
     # Create ipynb report.
     report_ipynb.report_util = report_util
+    report_ipynb.lang = args.lang
     report_util = report_ipynb.create_report()
 
     # Create HTML report.
