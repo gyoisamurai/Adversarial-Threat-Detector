@@ -30,6 +30,7 @@ class ReportUtility:
             self.report_path = os.path.join(self.base_path, config['Report']['report_path'])
             self.report_name = config['Report']['report_name']
             self.template = config['Report']['template_name']
+            self.template_ja = config['Report']['template_name_ja']
             self.adv_sample_num = 5
         except Exception as e:
             self.utility.print_message(FAIL, 'Reading config.ini is failure : {}'.format(e))

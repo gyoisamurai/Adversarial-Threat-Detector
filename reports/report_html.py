@@ -2,7 +2,6 @@
 # -*- coding:utf-8 -*-
 import os
 import configparser
-import pandas as pd
 import jinja2
 from .static_text import Summary
 
@@ -27,24 +26,44 @@ class HtmlReport:
         self.root_path = os.path.join(self.full_path, '../')
         config.read(os.path.join(self.root_path, 'config.ini'))
 
+        # Language for report.
+        self.lang = ''
+
     # Create report.
     def create_report(self):
         # Setting template.
         env = jinja2.Environment(loader=jinja2.FileSystemLoader(self.report_util.base_path))
-        template = env.get_template(self.report_util.template)
-        pd.set_option('display.max_colwidth', -1)
 
         # Report Setting.
-        self.report_util.template_target['rank'] = Summary.summary_executive_rank.value
-        self.report_util.template_target['summary'] = Summary.summary_executive_text.value
-        if self.report_util.template_data_poisoning['exist']:
-            self.report_util.template_data_poisoning['summary'] = Summary.summary_data_poisoning.value
-        if self.report_util.template_model_poisoning['exist']:
-            self.report_util.template_model_poisoning['summary'] = Summary.summary_model_poisoning.value
-        if self.report_util.template_evasion['exist']:
-            self.report_util.template_evasion['summary'] = Summary.summary_evasion.value
-        if self.report_util.template_exfiltration['exist']:
-            self.report_util.template_exfiltration['summary'] = Summary.summary_exfiltration.value
+        template = None
+        if self.lang == 'en':
+            # English.
+            template = env.get_template(self.report_util.template)
+            self.report_util.template_target['rank'] = Summary.summary_executive_rank.value
+            self.report_util.template_target['summary'] = Summary.summary_executive_text.value
+            if self.report_util.template_data_poisoning['exist']:
+                self.report_util.template_data_poisoning['summary'] = Summary.summary_data_poisoning.value
+            if self.report_util.template_model_poisoning['exist']:
+                self.report_util.template_model_poisoning['summary'] = Summary.summary_model_poisoning.value
+            if self.report_util.template_evasion['exist']:
+                self.report_util.template_evasion['summary'] = Summary.summary_evasion.value
+            if self.report_util.template_exfiltration['exist']:
+                self.report_util.template_exfiltration['summary'] = Summary.summary_exfiltration.value
+        else:
+            # Japanese.
+            template = env.get_template(self.report_util.template_ja)
+            self.report_util.template_target['rank'] = Summary.summary_executive_rank_ja.value
+            self.report_util.template_target['summary'] = Summary.summary_executive_text_ja.value
+            if self.report_util.template_data_poisoning['exist']:
+                self.report_util.template_data_poisoning['summary'] = Summary.summary_data_poisoning_ja.value
+            if self.report_util.template_model_poisoning['exist']:
+                self.report_util.template_model_poisoning['summary'] = Summary.summary_model_poisoning_ja.value
+            if self.report_util.template_evasion['exist']:
+                self.report_util.template_evasion['summary'] = Summary.summary_evasion_ja.value
+            if self.report_util.template_exfiltration['exist']:
+                self.report_util.template_exfiltration['summary'] = Summary.summary_exfiltration_ja.value
+
+        # pd.set_option('display.max_colwidth', -1)
 
         # Data to template.
         html = template.render(target=self.report_util.template_target,

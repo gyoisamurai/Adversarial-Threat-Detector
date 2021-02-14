@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
 import os
+import sys
 import time
 import argparse
 import configparser
@@ -100,9 +101,17 @@ if __name__ == '__main__':
     config = configparser.ConfigParser()
     config.read(os.path.join(full_path, 'config.ini'))
 
-    # Load target model and dataset.
-    model_path, model = utility.load_model(args.model_name)
-    dataset_path, label_path, X_test, y_test = utility.load_dataset(args.dataset_name, args.label_name, args.use_dataset_num)
+    # Load target model.
+    ret_status, model_path, model = utility.load_model(args.model_name)
+    if ret_status is False:
+        utility.write_log(20, '[Out] Adversarial Threat Detector [{}].'.format(file_name))
+        sys.exit(0)
+
+    # Load dataset.
+    ret_status, dataset_path, label_path, X_test, y_test = utility.load_dataset(args.dataset_name, args.label_name, args.use_dataset_num)
+    if ret_status is False:
+        utility.write_log(20, '[Out] Adversarial Threat Detector [{}].'.format(file_name))
+        sys.exit(0)
 
     # Report setting.
     report_util.make_report_dir()
@@ -118,12 +127,19 @@ if __name__ == '__main__':
         report_util.template_target['dataset_img'][elem] = sample_path
 
     # Scan setting.
-    classifier = utility.wrap_classifier(model, X_test)
+    ret_status, classifier = utility.wrap_classifier(model, X_test)
+    if ret_status is False:
+        utility.write_log(20, '[Out] Adversarial Threat Detector [{}].'.format(file_name))
+        sys.exit(0)
 
     # Accuracy on Benign Examples.
-    acc_benign = utility.evaluate(classifier, X_test=X_test, y_test=y_test)
-    utility.print_message(OK, 'Accuracy on Benign Examples : {}%'.format(acc_benign * 100))
-    report_util.template_target['accuracy'] = '{}%'.format(acc_benign * 100)
+    ret_status, acc_benign = utility.evaluate(classifier, X_test=X_test, y_test=y_test)
+    if ret_status is False:
+        utility.write_log(20, '[Out] Adversarial Threat Detector [{}].'.format(file_name))
+        sys.exit(0)
+    else:
+        utility.print_message(OK, 'Accuracy on Benign Examples : {}%'.format(acc_benign * 100))
+        report_util.template_target['accuracy'] = '{}%'.format(acc_benign * 100)
 
     # Evaluate all attacks.
     if args.attack_type == 'all':
@@ -140,100 +156,40 @@ if __name__ == '__main__':
         # All methods.
         if args.evasion_method == 'all':
             # FGSM.
-            report_util.template_evasion['fgsm']['exist'] = True
-            report_util.template_evasion['fgsm']['date'] = utility.get_current_date()
             fgsm = FGSM(utility=utility, model=classifier, dataset=X_test)
             X_adv_fgsm = fgsm.attack(eps=0.05)
-            acc_fgsm = utility.evaluate(classifier, X_test=X_adv_fgsm, y_test=y_test)
-            utility.print_message(WARNING, 'Accuracy on AEs (FGSM)      : {}%'.format(acc_fgsm * 100))
-            aes_sample_list = report_util.make_image(X_adv_fgsm, 'fgsm', sampling_idx)
-            adv_path = utility.save_adv_npz('fgsm', X_adv_fgsm, report_util.report_path)
-            report_util.template_evasion['fgsm']['aes_path'] = adv_path
-            for (sample_path, elem) in zip(aes_sample_list, report_util.template_evasion['fgsm']['ae_img'].keys()):
-                report_util.template_evasion['fgsm']['ae_img'][elem] = sample_path
-            if acc_benign > acc_fgsm:
-                report_util.template_evasion['consequence'] = 'Weak'
-                report_util.template_evasion['fgsm']['consequence'] = 'Weak (Benign={}%, AEs={}%)'.format(acc_benign * 100, acc_fgsm * 100)
+            ret_status, report_util = utility.evaluate_aes('fgsm', classifier, X_adv_fgsm, y_test, acc_benign,
+                                                           sampling_idx, report_util)
 
             # C&W.
-            report_util.template_evasion['cnw']['exist'] = True
-            report_util.template_evasion['cnw']['date'] = utility.get_current_date()
             cnw = CarliniL2(utility=utility, model=classifier, dataset=X_test)
             X_adv_cnw = cnw.attack(confidence=0.5)
-            acc_cnw = utility.evaluate(classifier, X_test=X_adv_cnw, y_test=y_test)
-            utility.print_message(WARNING, 'Accuracy on AEs (C&W)       : {}%'.format(acc_cnw * 100))
-            aes_sample_list = report_util.make_image(X_adv_cnw, 'cnw', sampling_idx)
-            adv_path = utility.save_adv_npz('cnw', X_adv_cnw, report_util.report_path)
-            report_util.template_evasion['cnw']['aes_path'] = adv_path
-            for (sample_path, elem) in zip(aes_sample_list, report_util.template_evasion['cnw']['ae_img'].keys()):
-                report_util.template_evasion['cnw']['ae_img'][elem] = sample_path
-            if acc_benign > acc_cnw:
-                report_util.template_evasion['consequence'] = 'Weak'
-                report_util.template_evasion['cnw']['consequence'] = 'Weak (Benign={}%, AEs={}%)'.format(acc_benign * 100, acc_cnw * 100)
+            ret_status, report_util = utility.evaluate_aes('cnw', classifier, X_adv_cnw, y_test, acc_benign,
+                                                           sampling_idx, report_util)
 
             # JSMA.
-            report_util.template_evasion['jsma']['exist'] = True
-            report_util.template_evasion['jsma']['date'] = utility.get_current_date()
             jsma = JSMA(utility=utility, model=classifier, dataset=X_test)
             X_adv_jsma = jsma.attack(theta=0.1, gamma=1.0)
-            acc_jsma = utility.evaluate(classifier, X_test=X_adv_jsma, y_test=y_test)
-            utility.print_message(WARNING, 'Accuracy on AEs (JSMA)      : {}%'.format(acc_jsma * 100))
-            aes_sample_list = report_util.make_image(X_adv_jsma, 'jsma', sampling_idx)
-            adv_path = utility.save_adv_npz('jsma', X_adv_jsma, report_util.report_path)
-            report_util.template_evasion['jsma']['aes_path'] = adv_path
-            for (sample_path, elem) in zip(aes_sample_list, report_util.template_evasion['jsma']['ae_img'].keys()):
-                report_util.template_evasion['jsma']['ae_img'][elem] = sample_path
-            if acc_benign > acc_jsma:
-                report_util.template_evasion['consequence'] = 'Weak'
-                report_util.template_evasion['jsma']['consequence'] = 'Weak (Benign={}%, AEs={}%)'.format(acc_benign * 100, acc_jsma * 100)
+            ret_status, report_util = utility.evaluate_aes('jsma', classifier, X_adv_jsma, y_test, acc_benign,
+                                                           sampling_idx, report_util)
         # Fast Gradient Signed Method.
         if args.evasion_method == 'fgsm':
-            report_util.template_evasion['fgsm']['exist'] = True
-            report_util.template_evasion['fgsm']['date'] = utility.get_current_date()
             fgsm = FGSM(utility=utility, model=classifier, dataset=X_test)
             X_adv_fgsm = fgsm.attack(eps=0.05)
-            acc_fgsm = utility.evaluate(classifier, X_test=X_adv_fgsm, y_test=y_test)
-            utility.print_message(WARNING, 'Accuracy on AEs (FGSM)      : {}%'.format(acc_fgsm * 100))
-            aes_sample_list = report_util.make_image(X_adv_fgsm, 'fgsm', sampling_idx)
-            adv_path = utility.save_adv_npz('fgsm', X_adv_fgsm, report_util.report_path)
-            report_util.template_evasion['fgsm']['aes_path'] = adv_path
-            for (sample_path, elem) in zip(aes_sample_list, report_util.template_evasion['fgsm']['ae_img'].keys()):
-                report_util.template_evasion['fgsm']['ae_img'][elem] = sample_path
-            if acc_benign > acc_fgsm:
-                report_util.template_evasion['consequence'] = 'Weak'
-                report_util.template_evasion['fgsm']['consequence'] = 'Weak (Benign={}%, AEs={}%)'.format(acc_benign * 100, acc_fgsm * 100)
+            ret_status, report_util = utility.evaluate_aes('fgsm', classifier, X_adv_fgsm, y_test, acc_benign,
+                                                           sampling_idx, report_util)
         # Carlini and Wagner Attack.
         elif args.evasion_method == 'cnw':
-            report_util.template_evasion['cnw']['exist'] = True
-            report_util.template_evasion['cnw']['date'] = utility.get_current_date()
             cnw = CarliniL2(utility=utility, model=classifier, dataset=X_test)
             X_adv_cnw = cnw.attack(confidence=0.5)
-            acc_cnw = utility.evaluate(classifier, X_test=X_adv_cnw, y_test=y_test)
-            utility.print_message(WARNING, 'Accuracy on AEs (C&W)       : {}%'.format(acc_cnw * 100))
-            aes_sample_list = report_util.make_image(X_adv_cnw, 'cnw', sampling_idx)
-            adv_path = utility.save_adv_npz('cnw', X_adv_cnw, report_util.report_path)
-            report_util.template_evasion['cnw']['aes_path'] = adv_path
-            for (sample_path, elem) in zip(aes_sample_list, report_util.template_evasion['cnw']['ae_img'].keys()):
-                report_util.template_evasion['cnw']['ae_img'][elem] = sample_path
-            if acc_benign > acc_cnw:
-                report_util.template_evasion['consequence'] = 'Weak'
-                report_util.template_evasion['cnw']['consequence'] = 'Weak (Benign={}%, AEs={}%)'.format(acc_benign * 100, acc_cnw * 100)
+            ret_status, report_util = utility.evaluate_aes('cnw', classifier, X_adv_cnw, y_test, acc_benign,
+                                                           sampling_idx, report_util)
         # Jacobian Saliency Map Attack.
         elif args.evasion_method == 'jsma':
-            report_util.template_evasion['jsma']['exist'] = True
-            report_util.template_evasion['jsma']['date'] = utility.get_current_date()
             jsma = JSMA(utility=utility, model=classifier, dataset=X_test)
             X_adv_jsma = jsma.attack(theta=0.1, gamma=1.0)
-            acc_jsma = utility.evaluate(classifier, X_test=X_adv_jsma, y_test=y_test)
-            utility.print_message(WARNING, 'Accuracy on AEs (JSMA)      : {}%'.format(acc_jsma * 100))
-            aes_sample_list = report_util.make_image(X_adv_jsma, 'jsma', sampling_idx)
-            adv_path = utility.save_adv_npz('jsma', X_adv_jsma, report_util.report_path)
-            report_util.template_evasion['jsma']['aes_path'] = adv_path
-            for (sample_path, elem) in zip(aes_sample_list, report_util.template_evasion['jsma']['ae_img'].keys()):
-                report_util.template_evasion['jsma']['ae_img'][elem] = sample_path
-            if acc_benign > acc_jsma:
-                report_util.template_evasion['consequence'] = 'Weak'
-                report_util.template_evasion['jsma']['consequence'] = 'Weak (Benign={}%, AEs={}%)'.format(acc_benign * 100, acc_jsma * 100)
+            ret_status, report_util = utility.evaluate_aes('jsma', classifier, X_adv_jsma, y_test, acc_benign,
+                                                           sampling_idx, report_util)
     # Evaluate Exfiltration Attacks.
     elif args.attack_type == 'exfiltration':
         utility.print_message(WARNING, 'Not implementation: {}'.format(args.attack_type))
@@ -245,6 +201,7 @@ if __name__ == '__main__':
 
     # Create HTML report.
     report_html.report_util = report_util
+    report_html.lang = args.lang
     report_html.create_report()
 
     print(os.path.basename(__file__) + ' Done!!')

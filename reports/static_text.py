@@ -9,23 +9,23 @@ class Summary(enum.Enum):
     summary_executive_rank = "Weak"
     summary_executive_rank_ja = "非常に脆弱です。"
     summary_executive_text = "Your classifier is vulnerable to Evasion Attacks. An adversary can input an Adversarial Examples into your classifier and cause it to misclassify into the class intended by the adversary."
-    summary_executive_text_ja = "あなたのAIは回避攻撃に脆弱です。攻撃者は細工した入力データ（敵対的サンプル）をAIに与えることで、入力データを攻撃者の意図したクラスに誤分類させることができます。"
+    summary_executive_text_ja = "あなたの分類器は回避攻撃に脆弱です。攻撃者は細工した入力データ（敵対的サンプル）を分類器に与えることで、入力データを攻撃者の意図したクラスに誤分類させることができます。"
 
     # Data Poisoning.
-    summary_data_poisoning = "あなたのAIはデータ汚染攻撃に脆弱です。攻撃者は細工したデータをAIの学習データに注入することで、AIの推論を操作することができます。"
-    summary_data_poisoning_ja = "あなたのAIはデータ汚染攻撃に脆弱です。攻撃者は細工したデータをAIの学習データに注入することで、AIの推論を操作することができます。"
+    summary_data_poisoning = "あなたの分類器はデータ汚染攻撃に脆弱です。攻撃者は細工したデータを分類器の学習データに注入することで、分類器の推論を操作することができます。"
+    summary_data_poisoning_ja = "あなたの分類器はデータ汚染攻撃に脆弱です。攻撃者は細工したデータを分類器の学習データに注入することで、分類器の推論を操作することができます。"
 
     # Model Poisoning.
-    summary_model_poisoning = "あなたのAIはデータ汚染攻撃に脆弱です。攻撃者は細工したデータをAIの学習データに注入することで、AIの推論を操作することができます。"
-    summary_model_poisoning_ja = "あなたのAIはモデル汚染攻撃に脆弱です。攻撃者は細工したノード・層を事前学習モデルに注入することで、AIの推論操作または任意のシステムコマンドを実行することができます。"
+    summary_model_poisoning = "あなたの分類器はデータ汚染攻撃に脆弱です。攻撃者は細工したデータを分類器の学習データに注入することで、分類器の推論を操作することができます。"
+    summary_model_poisoning_ja = "あなたの分類器はモデル汚染攻撃に脆弱です。攻撃者は細工したノード・層を事前学習モデルに注入することで、分類器の推論操作または任意のシステムコマンドを実行することができます。"
 
     # Evasion.
     summary_evasion = "Your classifier is vulnerable to Evasion Attacks. An adversary can input an Adversarial Examples into your classifier and cause it to misclassify into the class intended by the adversary."
-    summary_evasion_ja = "あなたのAIは回避攻撃に脆弱です。攻撃者は細工した入力データ（敵対的サンプル）をAIに与えることで、入力データを攻撃者の意図したクラスに誤分類させることができます。"
+    summary_evasion_ja = "あなたの分類器は回避攻撃に脆弱です。攻撃者は細工した入力データ（敵対的サンプル）を分類器に与えることで、入力データを攻撃者の意図したクラスに誤分類させることができます。"
 
     # Evasion.
-    summary_exfiltration = "あなたのAIは抽出攻撃に脆弱です。攻撃者はAIへの入出力情報を観察することで、AI内部のデータを窃取することができます。"
-    summary_exfiltration_ja = "あなたのAIは抽出攻撃に脆弱です。攻撃者はAIへの入出力情報を観察することで、AI内部のデータを窃取することができます。"
+    summary_exfiltration = "あなたの分類器は抽出攻撃に脆弱です。攻撃者は分類器への入出力情報を観察することで、分類器内部のデータを窃取することができます。"
+    summary_exfiltration_ja = "あなたの分類器は抽出攻撃に脆弱です。攻撃者は分類器への入出力情報を観察することで、分類器内部のデータを窃取することができます。"
 
 
 # Common parts.
@@ -47,7 +47,7 @@ class Common(enum.Enum):
     md_2_title_ja = "## 事前準備"
 
     md_2_text = "Import libraries required to replay the vulnerability and load your classifier to be verified."
-    md_2_text_ja = "脆弱性の再現に必要となるライブラリのインポートや、検証対象AIの読み込みなどを行います。"
+    md_2_text_ja = "脆弱性の再現に必要となるライブラリのインポートや、検証対象分類器の読み込みなどを行います。"
 
     md_2_1_title = "### Import libraries."
     md_2_1_title_ja = "### ライブラリのインポート"
@@ -88,7 +88,7 @@ print('Done')"""
     md_2_2_title_ja = "### データセットのロード"
 
     md_2_2_text = "Load the test data (normal data) of the classifier to be verified.  "
-    md_2_2_text_ja = "検証対象となるAIのテストデータ（ノーマルデータ）を読み込みます。  "
+    md_2_2_text_ja = "検証対象となる分類器のテストデータ（ノーマルデータ）を読み込みます。  "
 
     cd_2_2_code = """# Load dataset.
 X_test = np.load('{0}')
@@ -110,10 +110,10 @@ y_test = y_test[y_test.files[0]][:{1}]
 print('Done.')"""
 
     md_2_3_title = "### Load the classifier to be verified."
-    md_2_3_title_ja = "### 検証対象AIのロード"
+    md_2_3_title_ja = "### 検証対象分類器のロード"
 
     md_2_3_text = "Load the classifier to be verified."
-    md_2_3_text_ja = "検証対象のAIを読み込みます。"
+    md_2_3_text_ja = "検証対象の分類器を読み込みます。"
 
     cd_2_3_code = """# Load classifier.
 model = load_model('{0}')
@@ -124,13 +124,13 @@ print('Done.')"""
 model = load_model('{0}')
 model.summary()
 
-    print('Done.')"""
+print('Done.')"""
 
     md_2_4_title = "### Evaluation of the classifier's accuracy."
-    md_2_4_title_ja = "### AIの精度評価"
+    md_2_4_title_ja = "### 分類器の精度評価"
 
     md_2_4_text = "You will use the test data `X_test` to evaluate the inference accuracy of the loaded classifier."
-    md_2_4_text_ja = "テストデータ`X_test`を使用し、読み込んだAIの推論精度を評価します。"
+    md_2_4_text_ja = "テストデータ`X_test`を使用し、読み込んだ分類器の推論精度を評価します。"
 
     cd_2_4_code = """# Evaluation of the classifier's accuracy.
 predictions = model.predict(X_test)
@@ -138,7 +138,7 @@ accuracy = np.sum(np.argmax(predictions, axis=1) == np.argmax(y_test, axis=1)) /
 print('Accuracy on benign test example: {}%'.format(accuracy * 100))
 
 print('Done.')"""
-    cd_2_4_code_ja = """# AIの精度評価
+    cd_2_4_code_ja = """# 分類器の精度評価
 predictions = model.predict(X_test)
 accuracy = np.sum(np.argmax(predictions, axis=1) == np.argmax(y_test, axis=1)) / len(y_test)
 print('Accuracy on benign test example: {}%'.format(accuracy * 100))
@@ -199,13 +199,13 @@ print('Done.')"""
     md_ae_fgsm_4_title = "#### Visualization of normal data."
     md_ae_fgsm_4_title_ja = "#### 正常データの可視化"
 
-    cd_ae_fgsm_4_code = """# 正常データの可視化
+    cd_ae_fgsm_4_code = """# Visualization of normal data.
 for idx, image in enumerate(show_normal):
     plt.subplot(5, 5, idx + 1)
     plt.imshow(image)
 
 print('Done.')"""
-    cd_ae_fgsm_4_code_ja = """# Visualization of normal data.
+    cd_ae_fgsm_4_code_ja = """# 正常データの可視化
 for idx, image in enumerate(show_normal):
     plt.subplot(5, 5, idx + 1)
     plt.imshow(image)

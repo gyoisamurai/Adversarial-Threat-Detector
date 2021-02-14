@@ -20,10 +20,6 @@ ATD is following the [Adversarial Threat Matrix](https://github.com/mitre/advmlt
   <br>
 </div>
 
-|Note|
-|:---|
-|The current version of ATD supports only image classifiers built with `tf.keras`. Other classifiers will be supported in the future.|
-
 #### 1. Detecting vulnerabilities（Scanning & Detection）  
 ATD automatically executes a variety of attacks against the classifier and detects vulnerabilities.  
 
@@ -69,6 +65,18 @@ ATD automatically fixes detected vulnerabilities.
 The ATD checks fixed vulnerabilities of the fixed classifier.  
 
 **\* This feature will be supported in the next release.**  
+
+#### Support
+The current version of ATD supports only image classifiers built with `tf.keras`.   
+Other classifiers will be supported in the future.
+
+|Estimators|Image classify|Text classify|Other|
+|:--|:--|:--|:--|
+|Keras|supported|-|-|
+|TensorFlow|-|-|-|
+|TensorFlow v2|-|-|-|
+|PyTorch|-|-|-|
+|Scikit-learn|-|-|-|
 
 ## Road Map
 We will be releasing new features of ATD every other month.  
