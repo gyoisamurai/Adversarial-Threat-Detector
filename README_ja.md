@@ -23,7 +23,7 @@ ATDは、**分類器に対する様々な攻撃を全自動で実行し、脆弱
 
 <div align="center">
   <center>
-  <img src="./img/atd_scanning.png" width="800">
+  <img src="./img/atd_scanning.png">
   <figcaption><b>脆弱性スキャン</b></figcaption>
   </center>
   <br>
