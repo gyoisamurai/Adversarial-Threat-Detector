@@ -70,7 +70,7 @@ The ATD checks fixed vulnerabilities of the fixed classifier.
 The current version of ATD supports only image classifiers built with `tf.keras`.   
 Other classifiers will be supported in the future.
 
-|Estimators|Image classify|Text classify|Other|
+|Estimators|Image classification|Text classification|Other|
 |:--|:--|:--|:--|
 |Keras|supported|-|-|
 |TensorFlow|-|-|-|
