@@ -1,6 +1,13 @@
 # Adversarial-Threat-Detector
 [Japanese page](./README_ja.md)  
 
+<div align="center">
+  <center>
+  <img src="./img/gif_movie_atd_1.gif" width="700">
+  </center>
+  <br>
+</div>
+
 In recent years, deep learning technology has been developing, and various systems using deep learning are spreading in our society, such as face recognition, security cameras (anomaly detection), and ADAS (Advanced Driver-Assistance Systems).  
 
 On the other hand, there are many attacks that exploit vulnerabilities in deep learning algorithms. For example, the Evasion Attacks are an attack that causes the target classifier to misclassify the Adversarial Examples into the class intended by the adversary. the Exfiltration Attacks are an attack that steals the parameters and train data of a target classifier. If your system is vulnerable to these attacks, it can lead to serious incidents such as face recognition being breached, allowing unauthorized intrusion, or information leakage due to inference of train data.  
