@@ -52,6 +52,7 @@ ATDは、**分類器に対する様々な攻撃を全自動で実行し、脆弱
 </div>
 
 開発者は、検出された脆弱性の概要や対策を参照することで、脆弱性に対処する方法を知ることができます。  
+サンプルレポートは[こちら](https://github.com/gyoisamurai/Adversarial-Threat-Detector/blob/main/reports/sample/sample_report.html)。  
 
 * 脆弱性の再現環境（ipynb形式）  
 <div align="center">
@@ -63,6 +64,7 @@ ATDは、**分類器に対する様々な攻撃を全自動で実行し、脆弱
 </div>
 
 ATDが自動生成したipynbをJupyter Notebookで読み込むことで、分類器に対する攻撃手順を一つずつ確認することができます。これにより、脆弱性を深く理解することができます。  
+サンプルのNotebookは[こちら](https://github.com/gyoisamurai/Adversarial-Threat-Detector/blob/main/reports/sample/sample_ipynb.ipynb).  
 
 #### 3. 脆弱性の修正（Fix）  
 ATDは、検知された**脆弱性を自動で修正**します。  
