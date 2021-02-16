@@ -186,6 +186,3 @@ root@kali:~# python3 atd.py --model_name model.h5 --dataset_name X_test.npz --la
 ## Contact us
 * Email  
 [gyoiler3@gmail.com](mailto:gyoiler3@gmail.com)  
-
-* Twitter  
-[https://twitter.com/bbr_bbq](https://twitter.com/bbr_bbq)  
