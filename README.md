@@ -115,7 +115,6 @@ root@kali:~# apt-get install python3-pip
 ```
 root@kali:~# cd Adversarial-Threat-Detector
 root@kali:~/Adversarial-Threat-Detector# pip3 install -r requirements.txt
-root@kali:~/Adversarial-Threat-Detector# apt install python3-tk
 ```
 
 ## Usage
@@ -168,17 +167,50 @@ optional arguments:
 ### Tutorial
 #### Execution of Evasion Attack (FGSM).
 ```
-root@kali:~# python3 atd.py --model_name model.h5 --dataset_name X_test.npz --label_name y_test.npz --use_dataset_num 100 --attack_type evasion --evasion_method fgsm
+root@kali:~/Adversarial-Threat-Detector# python3 atd.py --model_name target_model.h5 --dataset_name X_test.npz --label_name y_test.npz --use_dataset_num 100 --attack_type evasion --evasion_method fgsm
 ```
 
 #### Execution of Evasion Attack (C&W).
 ```
-root@kali:~# python3 atd.py --model_name model.h5 --dataset_name X_test.npz --label_name y_test.npz --use_dataset_num 100 --attack_type evasion --evasion_method cnw
+root@kali:~/Adversarial-Threat-Detector# python3 atd.py --model_name target_model.h5 --dataset_name X_test.npz --label_name y_test.npz --use_dataset_num 100 --attack_type evasion --evasion_method cnw
 ```
 
 #### Execution of Evasion Attack (JSMA).
 ```
-root@kali:~# python3 atd.py --model_name model.h5 --dataset_name X_test.npz --label_name y_test.npz --use_dataset_num 100 --attack_type evasion --evasion_method jsma
+root@kali:~/Adversarial-Threat-Detector# python3 atd.py --model_name target_model.h5 --dataset_name X_test.npz --label_name y_test.npz --use_dataset_num 100 --attack_type evasion --evasion_method jsma
+```
+
+## Demo
+You can run ATD by using trained model and dataset we have prepared.  
+
+1. Download the trained image classifier built in `tf.keras`.  
+```
+root@kali:~/Adversarial-Threat-Detector# wget "https://drive.google.com/uc?export=download&id=1zFNn8EBHR_xewFW3-IhXkfdEop0gYUbu" -O demo_model.h5
+```
+
+2. Download the lightweight CIFAR10 which reduces the data to 1000.  
+```
+root@kali:~/Adversarial-Threat-Detector# wget "https://drive.google.com/uc?export=download&id=1AVtPVe2Z4UNVcIJlnO-Lbg0zVMQPS17Z" -O X_test.npz
+root@kali:~/Adversarial-Threat-Detector# wget "https://drive.google.com/uc?export=download&id=1JFEJPrwblgLn_alkzTR_ZKG7sEOp4Mom" -O y_test.npz
+```
+
+3. Move `demo_model.h5`, `X_test.npz`, `y_test.npz` to `targets` directory.  
+```
+root@kali:~/Adversarial-Threat-Detector# mv demo_model.h5 X_test.npz y -O X_test.npz y_test.npz ./targets/
+```
+
+4. Run ATD.  
+```
+root@kali:~/Adversarial-Threat-Detector# python3 atd.py --model_name demo_model.h5 --dataset_name X_test.npz --label_name y_test.npz --use_dataset_num 100 --attack_type evasion --evasion_method fgsm
+..snip..
+[!] Created report: ~/Adversarial-Threat-Detector/reports/../reports/20210217151416_scan/scan_report.html
+atd.py Done!!
+```
+
+5. Check scan report (html and ipynb).  
+```
+root@kali:~/Adversarial-Threat-Detector# firefox reports/20210217151416_scan/scan_report.html
+root@kali:~/Adversarial-Threat-Detector# jupyter notebook reports/20210217151416_scan/evasion_fgsm.ipynb
 ```
 
 ## Licence

@@ -10,7 +10,7 @@
 
 近年、ディープラーニング技術の発展により、顔認証や防犯カメラ（異常検知）、そして自動運転技術など、ディープラーニングを使用したシステムが普及しています。その一方で、ディープラーニングのアルゴリズムの脆弱性を突く攻撃手法の研究も急速に進んでいます。例えば、システムへの入力データを細工することで、これを攻撃者が意図したクラスに誤分類させる回避攻撃や、システムが学習したデータを推論する抽出攻撃などがあります。これらの攻撃に適切に対処していない場合、顔認証が突破されて不正侵入を許したり、学習データが推論されることで情報漏えいが発生するなど、重大なインシデントに繋がることになります。  
 
-そこで我々は、**Adversarial Threat Detector (a.k.a. ATD)と呼ばれる、ディープラーニング・ベースの分類器の脆弱性を自動検知する脆弱性スキャナーをリリースしました**。  
+そこで私達は、**Adversarial Threat Detector (a.k.a. ATD)と呼ばれる、ディープラーニング・ベースの分類器の脆弱性を自動検知する脆弱性スキャナーをリリースしました**。  
 
 ATDは、「脆弱性の発見（Scanning & Detection）」→「開発者の脆弱性の理解（Understand）」→「脆弱性の修正（Fix）」→「修正確認（Re-Scanning）」のサイクルを回すことで、単に脆弱性を検知するだけでなく、開発者の方々の脆弱性への理解を深めることで、あなたの分類器の安全確保に貢献します。  
 
@@ -114,7 +114,6 @@ root@kali:~# apt-get install python3-pip
 ```
 root@kali:~# cd Adversarial-Threat-Detector
 root@kali:~/Adversarial-Threat-Detector# pip3 install -r requirements.txt
-root@kali:~/Adversarial-Threat-Detector# apt install python3-tk
 ```
 
 ## Usage
@@ -167,17 +166,50 @@ optional arguments:
 ### チュートリアル
 #### 回避攻撃（FGSM）の実行
 ```
-root@kali:~# python3 atd.py --model_name model.h5 --dataset_name X_test.npz --label_name y_test.npz --use_dataset_num 100 --attack_type evasion --evasion_method fgsm
+root@kali:~/Adversarial-Threat-Detector# python3 atd.py --model_name target_model.h5 --dataset_name X_test.npz --label_name y_test.npz --use_dataset_num 100 --attack_type evasion --evasion_method fgsm
 ```
 
 #### 回避攻撃（C&W）の実行
 ```
-root@kali:~# python3 atd.py --model_name model.h5 --dataset_name X_test.npz --label_name y_test.npz --use_dataset_num 100 --attack_type evasion --evasion_method cnw
+root@kali:~/Adversarial-Threat-Detector# python3 atd.py --model_name target_model.h5 --dataset_name X_test.npz --label_name y_test.npz --use_dataset_num 100 --attack_type evasion --evasion_method cnw
 ```
 
 #### 回避攻撃（JSMA）の実行
 ```
-root@kali:~# python3 atd.py --model_name model.h5 --dataset_name X_test.npz --label_name y_test.npz --use_dataset_num 100 --attack_type evasion --evasion_method jsma
+root@kali:~/Adversarial-Threat-Detector# python3 atd.py --model_name target_model.h5 --dataset_name X_test.npz --label_name y_test.npz --use_dataset_num 100 --attack_type evasion --evasion_method jsma
+```
+
+## Demo
+私達が用意したデモ用のモデルとデータセットを使用してATDをデモ実行することができます。  
+
+1. `tf.keras`で構築した学習済みの画像分類器をダウンロードします。  
+```
+root@kali:~/Adversarial-Threat-Detector# wget "https://drive.google.com/uc?export=download&id=1zFNn8EBHR_xewFW3-IhXkfdEop0gYUbu" -O demo_model.h5
+```
+
+2. データ数を1,000個に削減した軽量のCIFAR10をダウンロードします。  
+```
+root@kali:~/Adversarial-Threat-Detector# wget "https://drive.google.com/uc?export=download&id=1AVtPVe2Z4UNVcIJlnO-Lbg0zVMQPS17Z" -O X_test.npz
+root@kali:~/Adversarial-Threat-Detector# wget "https://drive.google.com/uc?export=download&id=1JFEJPrwblgLn_alkzTR_ZKG7sEOp4Mom" -O y_test.npz
+```
+
+3. ダウンロードしたファイル（`demo_model.h5`,`X_test.npz`,`y_test.npz`）を`targets`ディレクトリに移動します。  
+```
+root@kali:~/Adversarial-Threat-Detector# mv demo_model.h5 X_test.npz y -O X_test.npz y_test.npz ./targets/
+```
+
+4. ATDを実行します。  
+```
+root@kali:~/Adversarial-Threat-Detector# python3 atd.py --model_name demo_model.h5 --dataset_name X_test.npz --label_name y_test.npz --use_dataset_num 100 --attack_type evasion --evasion_method fgsm
+..snip..
+[!] Created report: ~/Adversarial-Threat-Detector/reports/../reports/20210217151416_scan/scan_report.html
+atd.py Done!!
+```
+
+5. `reports`ディレクトリ以下に生成されたスキャンレポートをチェックします。  
+```
+root@kali:~/Adversarial-Threat-Detector# firefox reports/20210217151416_scan/scan_report.html
+root@kali:~/Adversarial-Threat-Detector# jupyter notebook reports/20210217151416_scan/evasion_fgsm.ipynb
 ```
 
 ## Licence
