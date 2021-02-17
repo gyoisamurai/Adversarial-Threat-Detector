@@ -67,25 +67,35 @@ Sample notebook is [here](https://github.com/gyoisamurai/Adversarial-Threat-Dete
 
 #### 3. Fixing vulnerabilities (Fix)  
 ATD automatically fixes detected vulnerabilities.  
-
 **\* This feature will be supported in the next release.**  
 
 #### 4. Check fixed vulnerabilities (Re-Scanning)  
 The ATD checks fixed vulnerabilities of the fixed classifier.  
-
 **\* This feature will be supported in the next release.**  
 
-#### Support
-The current version of ATD supports only image classifiers built with `tf.keras`.   
+## Support
+#### Classifier type.  
+The current version of ATD supports only **image classifier** built with `tf.keras`.   
 Other classifiers will be supported in the future.
 
-|Estimators|Image classification|Text classification|Other|
-|:--|:--|:--|:--|
+|Estimators|Image classifier|Text classifier|Other classifier|
+|:--|:--:|:--:|:--:|
 |Keras|supported|-|-|
 |TensorFlow|-|-|-|
 |TensorFlow v2|-|-|-|
 |PyTorch|-|-|-|
 |Scikit-learn|-|-|-|
+
+#### Attack type.  
+ATD supports only Evasion Attack.  
+Other attacks will be supported in the future.  
+
+|Attack type|Image classifier|Text classifier|Other classifier|
+|:--|:--:|:--:|:--:|
+|Data Poisoning|-|-|-|
+|Model Poisoning|-|-|-|
+|Evasion|supported|-|-|
+|Exfiltration|-|-|-|
 
 ## Road Map
 We will be releasing new features of ATD every other month.  
