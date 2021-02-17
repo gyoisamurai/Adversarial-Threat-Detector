@@ -51,7 +51,7 @@ When a vulnerability is detected, **ATD will generate a countermeasure report (H
 </div>
 
 Developers can fix the vulnerabilities by referring to the vulnerability overview and countermeasures.  
-Sample report is [here](https://github.com/gyoisamurai/Adversarial-Threat-Detector/blob/main/reports/sample/sample_report.html).  
+Sample report is [here](https://gyoisamurai.github.io/Adversarial-Threat-Detector/reports/sample/).  
 
 * Vulnerabilities Replay environment (ipynb style)  
 <div align="center">
