@@ -1,6 +1,8 @@
 # Adversarial-Threat-Detector
 [English page](./README.md)  
 
+<font size=4><b>Adversarial Threat Detector makes AI development <font color="red">Secure</font>.</b></font>
+
 <div align="center">
   <center>
   <img src="./img/gif_movie_atd_1.gif" width="700">
