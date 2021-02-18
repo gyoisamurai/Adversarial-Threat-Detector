@@ -1,7 +1,7 @@
 # Adversarial-Threat-Detector
 [Japanese page](./README_ja.md)  
 
-<font size=4><b>Adversarial Threat DetectorはAI開発を<font color="red">安全</font>にします。</b></font>
+<font size=4><b>Adversarial Threat Detector makes AI development <font color="red">Secure</font>.</b></font>
 
 <div align="center">
   <center>
