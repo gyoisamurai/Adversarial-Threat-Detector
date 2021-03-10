@@ -1,6 +1,10 @@
 # Adversarial-Threat-Detector
 [Japanese page](./README_ja.md)  
 
+### Topics
+We'll present a Adversarial Threat Detector at **Black Hat ASIA 2021 Arsenal**.  
+[More information](https://www.blackhat.com/asia-21/arsenal/schedule/#adversarial-threat-detector-22628)  
+
 <font size=4><b>Adversarial Threat Detector makes AI development <font color="red">Secure</font>.</b></font>
 
 <div align="center">
