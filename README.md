@@ -113,7 +113,8 @@ The roadmap for ATD is as follows.
 * 04.2021: Implementation of Detecting Model Poisoning.  
 * 05.2021: Implementation of Detecting Data Poisoning.  
 * 06.2021: Support for classifiers other than Keras.  
-* 07.2021: Support for non-image classifiers.  
+* 07.2021: Web interface for sharing secure classifier.  
+* 08.2021: Support for non-image classifiers.  
 
 ## Installation
 1. git clone ATD's repository.  
