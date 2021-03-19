@@ -207,6 +207,12 @@ class Utilty:
             sample_list.append(random.randint(0, data_size - 1))
         return sample_list
 
+    # Save model.
+    def save_model(self, model, model_name):
+        save_full_path = os.path.join(self.target_dir, model_name)
+        model.save(save_full_path)
+        self.print_message(OK, 'Saved model: {}'.format(save_full_path))
+
     # Save Adversarial Examples to Image file.
     def save_adv_images(self, idx, method, X_adv, save_path):
         scale = 255.0 / np.max(X_adv)

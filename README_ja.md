@@ -143,9 +143,13 @@ ATDの引数を変えることで、様々な脆弱性スキャンを実行す�
 |ATDの現バージョンは、回避攻撃にのみ対応しています。他の攻撃手法は今後対応する予定です。|
 
 ```
-usage: atd.py [-h] [--model_name MODEL_NAME] [--dataset_name DATASET_NAME] [--use_dataset_num USE_DATASET_NUM] [--label_name LABEL_NAME]
-              [--attack_type {all,data_poisoning,model_poisoning,evasion,exfiltration}] [--data_poisoning_method {fc,cp}] [--model_poisoning_method {node_injection,layer_injection}]
-              [--evasion_method {all,fgsm,cnw,jsma}] [--exfiltration_method {mi,label_only,inversion}] [--lang {en,ja}]
+usage: atd.py [-h] [--model_name MODEL_NAME] [--train_data_name TRAIN_DATA_NAME] [--test_data_name TEST_DATA_NAME] [--use_x_train_num USE_X_TRAIN_NUM] [--use_x_test_num USE_X_TEST_NUM]
+              [--train_label_name TRAIN_LABEL_NAME] [--test_label_name TEST_LABEL_NAME] [--op_type {attack,defence}] [--attack_type {data_poisoning,model_poisoning,evasion,exfiltration}]
+              [--attack_data_poisoning {feature_collision,convex_polytope,bullseye_polytope}] [--attack_model_poisoning {node_injection,layer_injection}] [--attack_evasion {fgsm,cnw,jsma}]
+              [--fgsm_epsilon {0.01,0.05,0.1,0.15,0.2,0.25,0.3}] [--cnw_confidence {0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1.0}] [--jsma_theta {0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1.0}]
+              [--jsma_gamma {0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1.0}] [--attack_exfiltration {membership_inference,label_only,inversion}] [--defence_type {data_poisoning,model_poisoning,evasion,exfiltration}]
+              [--defence_evasion {adversarial_training,feature_squeezing,jpeg_compression}] [--adversarial_training_attack {fgsm,cnw,jsma}] [--adversarial_training_ratio {0.1,0.2,0.3,0.4,0.5,0.6,0.7}]
+              [--adversarial_training_batch_size {32,64,128,256,512}] [--adversarial_training_epochs {10,20,30,40,50}] [--adversarial_training_shuffle {True,False}] [--lang {en,ja}]
 
 Adversarial Threat Detector.
 
@@ -153,22 +157,52 @@ optional arguments:
   -h, --help            show this help message and exit
   --model_name MODEL_NAME
                         Target model name.
-  --dataset_name DATASET_NAME
-                        Dataset name.
-  --use_dataset_num USE_DATASET_NUM
-                        Dataset number for test.
-  --label_name LABEL_NAME
-                        Label name.
-  --attack_type {all,data_poisoning,model_poisoning,evasion,exfiltration}
+  --train_data_name TRAIN_DATA_NAME
+                        Training dataset name.
+  --test_data_name TEST_DATA_NAME
+                        Test dataset name.
+  --use_x_train_num USE_X_TRAIN_NUM
+                        Dataset number for X_train.
+  --use_x_test_num USE_X_TEST_NUM
+                        Dataset number for X_test.
+  --train_label_name TRAIN_LABEL_NAME
+                        Train label name.
+  --test_label_name TEST_LABEL_NAME
+                        Test label name.
+  --op_type {attack,defence}
+                        operation type.
+  --attack_type {data_poisoning,model_poisoning,evasion,exfiltration}
                         Specify attack type.
-  --data_poisoning_method {fc,cp}
+  --attack_data_poisoning {feature_collision,convex_polytope,bullseye_polytope}
                         Specify method of Data Poisoning Attack.
-  --model_poisoning_method {node_injection,layer_injection}
+  --attack_model_poisoning {node_injection,layer_injection}
                         Specify method of Poisoning Attack.
-  --evasion_method {all,fgsm,cnw,jsma}
+  --attack_evasion {fgsm,cnw,jsma}
                         Specify method of Evasion Attack.
-  --exfiltration_method {mi,label_only,inversion}
+  --fgsm_epsilon {0.01,0.05,0.1,0.15,0.2,0.25,0.3}
+                        Specify Eps for FGSM.
+  --cnw_confidence {0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1.0}
+                        Specify Confidence for C&W.
+  --jsma_theta {0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1.0}
+                        Specify Theta for JSMA.
+  --jsma_gamma {0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1.0}
+                        Specify Gamma for JSMA.
+  --attack_exfiltration {membership_inference,label_only,inversion}
                         Specify method of Exfiltration Attack.
+  --defence_type {data_poisoning,model_poisoning,evasion,exfiltration}
+                        Specify defence type.
+  --defence_evasion {adversarial_training,feature_squeezing,jpeg_compression}
+                        Specify defence method against Evasion Attack.
+  --adversarial_training_attack {fgsm,cnw,jsma}
+                        Specify attack method for Adversarial Training.
+  --adversarial_training_ratio {0.1,0.2,0.3,0.4,0.5,0.6,0.7}
+                        Specify ratio for Adversarial Training.
+  --adversarial_training_batch_size {32,64,128,256,512}
+                        Specify batch size for Adversarial Training.
+  --adversarial_training_epochs {10,20,30,40,50}
+                        Specify epochs for Adversarial Training.
+  --adversarial_training_shuffle {True,False}
+                        Specify shuffle for Adversarial Training.
   --lang {en,ja}        Specify language of report.
 ```
 
@@ -206,10 +240,10 @@ root@kali:~/Adversarial-Threat-Detector# python3 atd.py --model_name target_mode
 root@kali:~/Adversarial-Threat-Detector# wget "https://drive.google.com/uc?export=download&id=1zFNn8EBHR_xewFW3-IhXkfdEop0gYUbu" -O demo_model.h5
 ```
 
-2. データ数を1,000個に削減した軽量のCIFAR10をダウンロードします。  
+2. デモに使用するデータセット（CIFAR10）をダウンロードします。  
 ```
-root@kali:~/Adversarial-Threat-Detector# wget "https://drive.google.com/uc?export=download&id=1AVtPVe2Z4UNVcIJlnO-Lbg0zVMQPS17Z" -O X_test.npz
-root@kali:~/Adversarial-Threat-Detector# wget "https://drive.google.com/uc?export=download&id=1JFEJPrwblgLn_alkzTR_ZKG7sEOp4Mom" -O y_test.npz
+root@kali:~/Adversarial-Threat-Detector# wget "https://drive.google.com/uc?export=download&id=1zJyB4zUDK22oU55rwTdbKMy0p3rOfuBw" -O X_test.npz
+root@kali:~/Adversarial-Threat-Detector# wget "https://drive.google.com/uc?export=download&id=1SUuXdebgMjUOMT8I-e5vFC8oMIVcDz5P" -O y_test.npz
 ```
 
 3. ダウンロードしたファイル（`demo_model.h5`,`X_test.npz`,`y_test.npz`）を`targets`ディレクトリに移動します。  

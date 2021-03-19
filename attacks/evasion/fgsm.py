@@ -25,10 +25,14 @@ class FGSM:
         self.model = model
         self.dataset = dataset
 
+    # Create Fast Gradient Signed Method instance.
+    def evasion(self, eps=0.05):
+        self.utility.print_message(NOTE, 'Creating Fast Gradient Signed Method instance.')
+        return FastGradientMethod(estimator=self.model, eps=eps)
+
     # Create Adversarial Examples.
-    def attack(self, eps=0.05):
+    def attack(self, fgsm):
         # Create Adversarial Examples using FGSM.
         self.utility.print_message(NOTE, 'Creating Adversarial Examples using FGSM.')
-        attack = FastGradientMethod(estimator=self.model, eps=eps)
-        X_adv = attack.generate(x=self.dataset)
+        X_adv = fgsm.generate(x=self.dataset)
         return X_adv
