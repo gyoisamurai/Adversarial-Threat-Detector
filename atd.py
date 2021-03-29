@@ -11,6 +11,7 @@ from attacks.evasion import FGSM, CarliniL2, JSMA
 from reports import ReportUtility, HtmlReport, IpynbReport
 from defences.trainer.adversarial_training import Adversarial_Training
 from util import Utilty
+from sql import DbControl
 
 # Type of printing.
 OK = 'ok'         # [*]
@@ -127,17 +128,17 @@ def defence(utility, args, classifier, X_train, y_train, X_test, y_test, report_
 
             at = Adversarial_Training(utility)
             at_classifier = at.trainer(classifier, attacks, ratio=args.adversarial_training_ratio)
-            defence_classifier = at.fit(at_classifier,
-                                        X_train,
-                                        y_train,
-                                        X_test,
-                                        y_test,
-                                        batch_size=args.adversarial_training_batch_size,
-                                        epochs=args.adversarial_training_epochs,
-                                        shuffle=args.adversarial_training_shuffle)
+            at.fit(at_classifier,
+                   X_train,
+                   y_train,
+                   X_test,
+                   y_test,
+                   batch_size=args.adversarial_training_batch_size,
+                   epochs=args.adversarial_training_epochs,
+                   shuffle=args.adversarial_training_shuffle)
 
             # Save model.
-            utility.save_model(defence_classifier, 'at_model.h5')
+            utility.save_model(classifier, 'at_model.h5')
 
         # Feature Squeezing.
         elif args.defence_evasion == 'feature_squeezing':
@@ -163,11 +164,15 @@ if __name__ == '__main__':
     report_ipynb = IpynbReport(utility)
     utility.write_log(20, '[In] Adversarial Threat Detector [{}].'.format(file_name))
 
+    # Initialize Database.
+    utility.sql = DbControl(utility)
+
     # Show banner.
     show_banner(utility)
 
     # Parse arguments.
     parser = argparse.ArgumentParser(description='Adversarial Threat Detector.')
+    parser.add_argument('--scan_id', default='', type=str, help='Scan\'s identifier for GyoiBoard.')
     parser.add_argument('--model_name', default='', type=str, help='Target model name.')
     parser.add_argument('--train_data_name', default='X_train.npz', type=str, help='Training dataset name.')
     parser.add_argument('--test_data_name', default='X_test.npz', type=str, help='Test dataset name.')
@@ -178,19 +183,19 @@ if __name__ == '__main__':
     parser.add_argument('--op_type', default='', choices=['attack', 'defence'], type=str, help='operation type.')
 
     # Attack.
-    parser.add_argument('--attack_type', default='evasion',
+    parser.add_argument('--attack_type', default='',
                         choices=['data_poisoning', 'model_poisoning', 'evasion', 'exfiltration'],
                         type=str, help='Specify attack type.')
 
-    parser.add_argument('--attack_data_poisoning', default='feature_collision',
+    parser.add_argument('--attack_data_poisoning', default='',
                         choices=['feature_collision', 'convex_polytope', 'bullseye_polytope'],
                         type=str, help='Specify method of Data Poisoning Attack.')
 
-    parser.add_argument('--attack_model_poisoning', default='node_injection',
+    parser.add_argument('--attack_model_poisoning', default='',
                         choices=['node_injection', 'layer_injection'],
                         type=str, help='Specify method of Poisoning Attack.')
 
-    parser.add_argument('--attack_evasion', default='fgsm', choices=['fgsm', 'cnw', 'jsma'],
+    parser.add_argument('--attack_evasion', default='', choices=['fgsm', 'cnw', 'jsma'],
                         type=str, help='Specify method of Evasion Attack.')
     parser.add_argument('--fgsm_epsilon', default=0.05, choices=[0.01, 0.05, 0.1, 0.15, 0.2, 0.25, 0.3],
                         type=float, help='Specify Eps for FGSM.')
@@ -201,19 +206,19 @@ if __name__ == '__main__':
     parser.add_argument('--jsma_gamma', default=1.0, choices=[0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0],
                         type=float, help='Specify Gamma for JSMA.')
 
-    parser.add_argument('--attack_exfiltration', default='membership_inference',
+    parser.add_argument('--attack_exfiltration', default='',
                         choices=['membership_inference', 'label_only', 'inversion'],
                         type=str, help="Specify method of Exfiltration Attack.")
 
     # Defence.
-    parser.add_argument('--defence_type', default='evasion',
+    parser.add_argument('--defence_type', default='',
                         choices=['data_poisoning', 'model_poisoning', 'evasion', 'exfiltration'],
                         type=str, help='Specify defence type.')
 
-    parser.add_argument('--defence_evasion', default='adversarial_training',
+    parser.add_argument('--defence_evasion', default='',
                         choices=['adversarial_training', 'feature_squeezing', 'jpeg_compression'],
                         type=str, help='Specify defence method against Evasion Attack.')
-    parser.add_argument('--adversarial_training_attack', default='fgsm', choices=['fgsm', 'cnw', 'jsma'],
+    parser.add_argument('--adversarial_training_attack', default='', choices=['fgsm', 'cnw', 'jsma'],
                         type=str, help='Specify attack method for Adversarial Training.')
     parser.add_argument('--adversarial_training_ratio', default=0.5, choices=[0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7],
                         type=float, help='Specify ratio for Adversarial Training.')
@@ -260,6 +265,48 @@ if __name__ == '__main__':
     for (sample_path, elem) in zip(benign_sample_list, report_util.template_target['dataset_img'].keys()):
         report_util.template_target['dataset_img'][elem] = sample_path
 
+    # Insert scan record.
+    if args.scan_id != '':
+        # Set attack's method.
+        attack_method = ''
+        if args.attack_type == 'data_poisoning':
+            attack_method = args.attack_data_poisoning
+        elif args.attack_type == 'model_poisoning':
+            attack_method = args.attack_model_poisoning
+        elif args.attack_type == 'evasion':
+            attack_method = args.attack_evasion
+        elif args.attack_type == 'exfiltration':
+            attack_method = args.attack_exfiltration
+
+        # Set defence's method.
+        # TODO: ディフェンスタイプを設定すること。
+        defence_method = ''
+        if args.defence_type == 'data_poisoning':
+            attack_method = args.attack_data_poisoning
+        elif args.attack_type == 'model_poisoning':
+            attack_method = args.attack_model_poisoning
+        elif args.attack_type == 'evasion':
+            attack_method = args.attack_evasion
+        elif args.attack_type == 'exfiltration':
+            attack_method = args.attack_exfiltration
+
+        utility.insert_new_scan_record(args.scan_id,
+                                       'Scanning',
+                                       args.model_name,
+                                       args.train_data_name,
+                                       args.use_x_train_num,
+                                       args.train_label_name,
+                                       args.test_data_name,
+                                       args.use_x_test_num,
+                                       args.test_label_name,
+                                       args.op_type,
+                                       args.attack_type,
+                                       attack_method,
+                                       args.defence_type,
+                                       defence_method,
+                                       utility.get_current_date(),
+                                       args.lang)
+
     # Preparation.
     ret_status, classifier = utility.wrap_classifier(model, X_test)
     if ret_status is False:
@@ -283,12 +330,22 @@ if __name__ == '__main__':
         # Create ipynb report.
         report_ipynb.report_util = report_util
         report_ipynb.lang = args.lang
-        report_util = report_ipynb.create_report()
+        report_util, report_ipynb_path = report_ipynb.create_report()
 
         # Create HTML report.
         report_html.report_util = report_util
         report_html.lang = args.lang
-        report_html.create_report()
+        report_html_path = report_html.create_report()
+
+        if args.scan_id != '':
+            # Update scan status.
+            utility.update_status(args.scan_id, 'Done')
+
+            # Update scan record.
+            utility.update_report_path(args.scan_id, report_html_path, report_ipynb_path)
+
+            # Update end datetime of scan.
+            utility.update_exec_end_date(args.scan_id, utility.get_current_date())
     elif args.op_type == 'defence':
         # Load test data.
         ret_status, _, _, X_train, y_train = utility.load_dataset(args.train_data_name,

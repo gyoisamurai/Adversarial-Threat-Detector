@@ -39,13 +39,14 @@ NONE = 'none'     # No label.
 
 # Utility class.
 class Utilty:
-    def __init__(self):
+    def __init__(self, sql=None):
         # Read config.ini.
         full_path = os.path.dirname(os.path.abspath(__file__))
         config = configparser.ConfigParser()
         config.read(os.path.join(full_path, 'config.ini'))
 
         try:
+            self.sql = sql
             self.banner_delay = float(config['Common']['banner_delay'])
             self.report_date_format = config['Common']['date_format']
             self.log_dir = os.path.join(full_path, config['Common']['log_path'])
@@ -280,3 +281,52 @@ class Utilty:
     # Transform date from object to string.
     def transform_date_string(self, target_date):
         return target_date.strftime(self.report_date_format)
+
+    # Insert new scan record.
+    def insert_new_scan_record(self, scan_id, status, target_path, x_train_path, x_train_num, y_train_path,
+                               x_test_path, x_test_num, y_test_path, operation_type, attack_type, attack_method,
+                               defence_type, defence_method, exec_start_date, lang):
+        try:
+            self.sql.insert(self.sql.conn, self.sql.state_insert, (scan_id,
+                                                                   status,
+                                                                   target_path,
+                                                                   x_train_path,
+                                                                   x_train_num,
+                                                                   y_train_path,
+                                                                   x_test_path,
+                                                                   x_test_num,
+                                                                   y_test_path,
+                                                                   operation_type,
+                                                                   attack_type,
+                                                                   attack_method,
+                                                                   defence_type,
+                                                                   defence_method,
+                                                                   exec_start_date,
+                                                                   lang))
+        except Exception as e:
+            self.print_exception(e, 'Could not insert new user.')
+        return
+
+    # Update Scan's status.
+    def update_status(self, scan_id, status):
+        try:
+            self.sql.update(self.sql.conn, self.sql.state_update_status, (status, scan_id))
+        except Exception as e:
+            self.print_exception(e, 'Could not update the status.')
+        return
+
+    # Update end datetime of execution.
+    def update_exec_end_date(self, scan_id, exec_end_date):
+        try:
+            self.sql.update(self.sql.conn, self.sql.state_update_exec_end_date, (exec_end_date, scan_id))
+        except Exception as e:
+            self.print_exception(e, 'Could not update the exec end date.')
+        return
+
+    # Update report's path.
+    def update_report_path(self, scan_id, html_path, ipynb_path):
+        try:
+            self.sql.update(self.sql.conn, self.sql.state_update_report_path, (html_path, ipynb_path, scan_id))
+        except Exception as e:
+            self.print_exception(e, 'Could not update the exec end date.')
+        return

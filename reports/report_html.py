@@ -77,3 +77,4 @@ class HtmlReport:
         with open(report_full_path, 'w') as fout:
             fout.write(html)
         self.utility.print_message(WARNING, 'Created report: {}'.format(report_full_path))
+        return report_full_path

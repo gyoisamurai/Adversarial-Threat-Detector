@@ -158,6 +158,7 @@ class IpynbReport:
         nb = self.create_common(nb)
 
         # Create replay part.
+        report_full_path = ''
         if self.report_util.template_data_poisoning['exist']:
             self.utility.print_message(WARNING, 'Not implementation.')
         elif self.report_util.template_model_poisoning['exist']:
@@ -180,4 +181,4 @@ class IpynbReport:
             self.utility.print_message(WARNING, 'Not implementation.')
 
         self.utility.print_message(NOTE, 'Done creating report.')
-        return self.report_util
+        return self.report_util, report_full_path

@@ -35,5 +35,3 @@ class Adversarial_Training:
                        nb_epochs=epochs,
                        validation_data=(X_test, y_test),
                        shuffle=shuffle)
-
-        return classifier
