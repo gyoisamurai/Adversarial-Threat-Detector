@@ -127,3 +127,9 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+# ATD directory
+targets/
+logs/
+reports/*_scan
+reports/pycache
