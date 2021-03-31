@@ -69,6 +69,7 @@ class ReportUtility:
         self.adv_image_path = os.path.join(self.report_path, 'img')
         os.makedirs(self.report_path, exist_ok=False)
         os.makedirs(self.adv_image_path, exist_ok=False)
+        return self.report_path
 
     # Make image file for Adversarial Examples.
     def make_image(self, X_adv, method, sampling_idx):

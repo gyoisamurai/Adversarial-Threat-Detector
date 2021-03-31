@@ -68,15 +68,17 @@ class DbControl:
                             'defence_method,' \
                             'exec_start_date,' \
                             'exec_end_date,' \
-                            'report_html_path,' \
-                            'report_ipynb_path,' \
-                            'lang) VALUES (?,?,"Weak",?,?,?,?,?,?,?,?,?,?,?,?,?,"","","",?)'
+                            'report_path, ' \
+                            'report_html,' \
+                            'report_ipynb,' \
+                            'lang) VALUES (?,?,"Weak",?,?,?,?,?,?,?,?,?,?,?,?,?,"","","","",?)'
         self.state_update_status = 'UPDATE ScanResultTBL SET status = ? WHERE scan_id = ?'
         self.state_update_exec_end_date = 'UPDATE ScanResultTBL SET exec_end_date = ? WHERE scan_id = ?'
         self.state_update_report_path = 'UPDATE ScanResultTBL ' \
                                         'SET ' \
-                                        'report_html_path = ?,' \
-                                        'report_ipynb_path = ?' \
+                                        'report_path = ?,' \
+                                        'report_html = ?,' \
+                                        'report_ipynb = ?' \
                                         'WHERE scan_id = ?'
         self.state_delete = 'DELETE FROM ScanResultTBL WHERE scan_id = ?'
         self.state_delete_all = 'DELETE FROM ScanResultTBL'
@@ -111,8 +113,9 @@ class DbControl:
                                 'defence_method TEXT, ' \
                                 'exec_start_date TEXT, ' \
                                 'exec_end_date TEXT, '\
-                                'report_html_path TEXT, ' \
-                                'report_ipynb_path TEXT, ' \
+                                'report_path, ' \
+                                'report_html TEXT, ' \
+                                'report_ipynb TEXT, ' \
                                 'lang TEXT);'
                     conn.execute('begin transaction')
                     conn.execute(sql_query)

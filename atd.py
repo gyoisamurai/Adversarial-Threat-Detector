@@ -253,7 +253,7 @@ if __name__ == '__main__':
         sys.exit(0)
 
     # Report setting.
-    report_util.make_report_dir()
+    report_path = report_util.make_report_dir()
     sampling_idx = utility.random_sampling(data_size=len(X_test), sample_num=report_util.adv_sample_num)
     benign_sample_list = report_util.make_image(X_test, 'benign', sampling_idx)
 
@@ -330,19 +330,19 @@ if __name__ == '__main__':
         # Create ipynb report.
         report_ipynb.report_util = report_util
         report_ipynb.lang = args.lang
-        report_util, report_ipynb_path = report_ipynb.create_report()
+        report_util, report_ipynb_name = report_ipynb.create_report()
 
         # Create HTML report.
         report_html.report_util = report_util
         report_html.lang = args.lang
-        report_html_path = report_html.create_report()
+        report_html.create_report()
 
         if args.scan_id != '':
             # Update scan status.
             utility.update_status(args.scan_id, 'Done')
 
             # Update scan record.
-            utility.update_report_path(args.scan_id, report_html_path, report_ipynb_path)
+            utility.update_report_path(args.scan_id, report_path, report_html.report_util.report_name, report_ipynb_name)
 
             # Update end datetime of scan.
             utility.update_exec_end_date(args.scan_id, utility.get_current_date())

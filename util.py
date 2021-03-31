@@ -324,9 +324,9 @@ class Utilty:
         return
 
     # Update report's path.
-    def update_report_path(self, scan_id, html_path, ipynb_path):
+    def update_report_path(self, scan_id, report_path, html, ipynb):
         try:
-            self.sql.update(self.sql.conn, self.sql.state_update_report_path, (html_path, ipynb_path, scan_id))
+            self.sql.update(self.sql.conn, self.sql.state_update_report_path, (report_path, html, ipynb, scan_id))
         except Exception as e:
             self.print_exception(e, 'Could not update the exec end date.')
         return

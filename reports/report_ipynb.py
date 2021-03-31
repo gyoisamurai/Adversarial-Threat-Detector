@@ -158,6 +158,7 @@ class IpynbReport:
         nb = self.create_common(nb)
 
         # Create replay part.
+        report_name = ''
         report_full_path = ''
         if self.report_util.template_data_poisoning['exist']:
             self.utility.print_message(WARNING, 'Not implementation.')
@@ -166,8 +167,9 @@ class IpynbReport:
         elif self.report_util.template_evasion['exist']:
             if self.report_util.template_evasion['fgsm']['exist']:
                 # Create FGSM.
+                report_name = 'evasion_fgsm.ipynb'
                 nb = self.create_evasion_fgsm(nb, self.report_util.template_evasion['fgsm']['aes_path'])
-                report_full_path = os.path.join(self.report_util.report_path, 'evasion_fgsm.ipynb')
+                report_full_path = os.path.join(self.report_util.report_path, report_name)
                 with open(report_full_path, 'w') as fout:
                     nbformat.write(nb, fout)
                 self.report_util.template_evasion['fgsm']['ipynb_path'] = report_full_path
@@ -181,4 +183,4 @@ class IpynbReport:
             self.utility.print_message(WARNING, 'Not implementation.')
 
         self.utility.print_message(NOTE, 'Done creating report.')
-        return self.report_util, report_full_path
+        return self.report_util, report_name
