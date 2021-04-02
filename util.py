@@ -215,13 +215,14 @@ class Utilty:
         self.print_message(OK, 'Saved model: {}'.format(save_full_path))
 
     # Save Adversarial Examples to Image file.
-    def save_adv_images(self, idx, method, X_adv, save_path):
+    def save_adv_images(self, idx, method, X_adv, report_path, img_path):
         scale = 255.0 / np.max(X_adv)
         pil_img = Image.fromarray(np.uint8(X_adv * scale))
-        save_full_path = os.path.join(save_path, 'adv_{}_{}.jpg'.format(method, idx+1))
+        img_path = os.path.join(img_path, 'adv_{}_{}.jpg'.format(method, idx+1))
+        save_full_path = os.path.join(report_path, img_path)
         pil_img.save(save_full_path)
         self.print_message(OK, 'Saved Adversarial Examples to image file: {}'.format(save_full_path))
-        return save_full_path
+        return img_path
 
     # Save Adversarial Examples to npz format.
     def save_adv_npz(self, method, X_adv, save_path):
@@ -249,9 +250,8 @@ class Utilty:
             report_util.template_evasion[attack_method]['ae_img'][elem] = sample_path
         if acc_benign > acc_adv:
             report_util.template_evasion['consequence'] = 'Weak'
-            report_util.template_evasion[attack_method]['consequence'] = 'Weak (Benign={}%, AEs={}%)'.format(
-                acc_benign * 100,
-                acc_adv * 100)
+            report_util.template_evasion[attack_method]['consequence'] = 'Weak'
+        report_util.template_evasion['accuracy'] = acc_adv * 100
         return ret_status, report_util
 
     # Write logs.
@@ -282,51 +282,106 @@ class Utilty:
     def transform_date_string(self, target_date):
         return target_date.strftime(self.report_date_format)
 
-    # Insert new scan record.
+    # Insert new scan record to Common table.
     def insert_new_scan_record(self, scan_id, status, target_path, x_train_path, x_train_num, y_train_path,
                                x_test_path, x_test_num, y_test_path, operation_type, attack_type, attack_method,
                                defence_type, defence_method, exec_start_date, lang):
         try:
-            self.sql.insert(self.sql.conn, self.sql.state_insert, (scan_id,
-                                                                   status,
-                                                                   target_path,
-                                                                   x_train_path,
-                                                                   x_train_num,
-                                                                   y_train_path,
-                                                                   x_test_path,
-                                                                   x_test_num,
-                                                                   y_test_path,
-                                                                   operation_type,
-                                                                   attack_type,
-                                                                   attack_method,
-                                                                   defence_type,
-                                                                   defence_method,
-                                                                   exec_start_date,
-                                                                   lang))
+            self.sql.insert(self.sql.conn, self.sql.state_common_insert, (scan_id,
+                                                                          status,
+                                                                          target_path,
+                                                                          x_train_path,
+                                                                          x_train_num,
+                                                                          y_train_path,
+                                                                          x_test_path,
+                                                                          x_test_num,
+                                                                          y_test_path,
+                                                                          operation_type,
+                                                                          attack_type,
+                                                                          attack_method,
+                                                                          defence_type,
+                                                                          defence_method,
+                                                                          exec_start_date,
+                                                                          lang))
+            self.print_message(OK, 'Inserted new record to Common table for {}'.format(scan_id))
         except Exception as e:
             self.print_exception(e, 'Could not insert new user.')
         return
 
-    # Update Scan's status.
+    # Update accuracy of target model on Common table.
+    def update_accuracy(self, scan_id, accuracy):
+        try:
+            self.sql.update(self.sql.conn, self.sql.state_common_update_accuracy, (accuracy, scan_id))
+            self.print_message(OK, 'Updated accuracy for {}'.format(scan_id))
+        except Exception as e:
+            self.print_exception(e, 'Could not update the accuracy.')
+        return
+
+    # Update Scan's status on Common table.
     def update_status(self, scan_id, status):
         try:
-            self.sql.update(self.sql.conn, self.sql.state_update_status, (status, scan_id))
+            self.sql.update(self.sql.conn, self.sql.state_common_update_status, (status, scan_id))
+            self.print_message(OK, 'Updated scan status for {}'.format(scan_id))
         except Exception as e:
             self.print_exception(e, 'Could not update the status.')
         return
 
-    # Update end datetime of execution.
+    # Update rank and summary on Common table.
+    def update_rank_summary(self, scan_id, rank, summary):
+        try:
+            self.sql.update(self.sql.conn, self.sql.state_common_update_rank, (rank, summary, scan_id))
+            self.print_message(OK, 'Updated rank and summary for {}'.format(scan_id))
+        except Exception as e:
+            self.print_exception(e, 'Could not update the rank and summary.')
+        return
+
+    # Update end datetime of execution on Common table.
     def update_exec_end_date(self, scan_id, exec_end_date):
         try:
-            self.sql.update(self.sql.conn, self.sql.state_update_exec_end_date, (exec_end_date, scan_id))
+            self.sql.update(self.sql.conn, self.sql.state_common_update_exec_end_date, (exec_end_date, scan_id))
+            self.print_message(OK, 'Updated end date of scan {}'.format(scan_id))
         except Exception as e:
             self.print_exception(e, 'Could not update the exec end date.')
         return
 
-    # Update report's path.
+    # Update report's path on Common table.
     def update_report_path(self, scan_id, report_path, html, ipynb):
         try:
-            self.sql.update(self.sql.conn, self.sql.state_update_report_path, (report_path, html, ipynb, scan_id))
+            self.sql.update(self.sql.conn, self.sql.state_common_update_report_path, (report_path, html, ipynb, scan_id))
+            self.print_message(OK, 'Updated report \'s path for {}'.format(scan_id))
         except Exception as e:
-            self.print_exception(e, 'Could not update the exec end date.')
+            self.print_exception(e, 'Could not update the report\'s path.')
+        return
+
+    # Insert new scan record to Evasion table.
+    def insert_new_scan_record_evasion(self, scan_id, attack_method):
+        try:
+            self.sql.insert(self.sql.conn, self.sql.state_evasion_insert, (scan_id, attack_method))
+            self.print_message(OK, 'Inserted new record to Evasion table for {}'.format(scan_id))
+        except Exception as e:
+            self.print_exception(e, 'Could not insert new user to ScanResultEvasionTBL.')
+        return
+
+    # Update consequence, summary, accuracy on Evasion table.
+    def update_consequence_evasion(self, scan_id, consequence, summary, accuracy):
+        try:
+            self.sql.update(self.sql.conn,
+                            self.sql.state_evasion_update_consequence,
+                            (consequence, summary, accuracy, scan_id))
+            self.print_message(OK, 'Updated evasion attack\'s consequence for {}'.format(scan_id))
+        except Exception as e:
+            self.print_exception(e, 'Could not update the report\'s path.')
+        return
+
+    # Insert new scan record to FGSM table.
+    def insert_new_scan_record_fgsm(self, scan_id, epsilon, epsilon_step, targeted, batch_size):
+        try:
+            self.sql.insert(self.sql.conn, self.sql.state_fgsm_insert, (scan_id,
+                                                                        epsilon,
+                                                                        epsilon_step,
+                                                                        targeted,
+                                                                        batch_size))
+            self.print_message(OK, 'Inserted new record to FGSM table gffor {}'.format(scan_id))
+        except Exception as e:
+            self.print_exception(e, 'Could not insert new user to EvasionFGSMTBL.')
         return

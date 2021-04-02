@@ -47,41 +47,71 @@ class DbControl:
             self.utility.print_message(FAIL, 'Reading config.ini is failure : {}'.format(e))
             sys.exit(1)
 
-        # Query templates.
-        self.state_select = 'SELECT * FROM ScanResultTBL WHERE status = ?'
-        self.state_select_id = 'SELECT * FROM ScanResultTBL WHERE scan_id = ?'
-        self.state_insert = 'INSERT INTO ScanResultTBL (' \
-                            'scan_id,' \
-                            'status,' \
-                            'rank,' \
-                            'target_path,' \
-                            'x_train_path,' \
-                            'x_train_num,' \
-                            'y_train_path,' \
-                            'x_test_path,' \
-                            'x_test_num,' \
-                            'y_test_path,' \
-                            'operation_type,' \
-                            'attack_type,' \
-                            'attack_method,' \
-                            'defence_type,' \
-                            'defence_method,' \
-                            'exec_start_date,' \
-                            'exec_end_date,' \
-                            'report_path, ' \
-                            'report_html,' \
-                            'report_ipynb,' \
-                            'lang) VALUES (?,?,"Weak",?,?,?,?,?,?,?,?,?,?,?,?,?,"","","","",?)'
-        self.state_update_status = 'UPDATE ScanResultTBL SET status = ? WHERE scan_id = ?'
-        self.state_update_exec_end_date = 'UPDATE ScanResultTBL SET exec_end_date = ? WHERE scan_id = ?'
-        self.state_update_report_path = 'UPDATE ScanResultTBL ' \
-                                        'SET ' \
-                                        'report_path = ?,' \
-                                        'report_html = ?,' \
-                                        'report_ipynb = ?' \
-                                        'WHERE scan_id = ?'
-        self.state_delete = 'DELETE FROM ScanResultTBL WHERE scan_id = ?'
-        self.state_delete_all = 'DELETE FROM ScanResultTBL'
+        # Query templates for Common.
+        self.state_common_select = 'SELECT * FROM ScanResultTBL WHERE status = ?'
+        self.state_common_select_id = 'SELECT * FROM ScanResultTBL WHERE scan_id = ?'
+        self.state_common_insert = 'INSERT INTO ScanResultTBL (' \
+                                   'scan_id,' \
+                                   'status,' \
+                                   'rank,' \
+                                   'summary,' \
+                                   'target_path,' \
+                                   'accuracy, ' \
+                                   'x_train_path,' \
+                                   'x_train_num,' \
+                                   'y_train_path,' \
+                                   'x_test_path,' \
+                                   'x_test_num,' \
+                                   'y_test_path,' \
+                                   'operation_type,' \
+                                   'attack_type,' \
+                                   'attack_method,' \
+                                   'defence_type,' \
+                                   'defence_method,' \
+                                   'exec_start_date,' \
+                                   'exec_end_date,' \
+                                   'report_path, ' \
+                                   'report_html,' \
+                                   'report_ipynb,' \
+                                   'lang) VALUES (?,?,"","",?,"",?,?,?,?,?,?,?,?,?,?,?,?,"","","","",?)'
+        self.state_common_update_accuracy = 'UPDATE ScanResultTBL SET accuracy = ? WHERE scan_id = ?'
+        self.state_common_update_status = 'UPDATE ScanResultTBL SET status = ? WHERE scan_id = ?'
+        self.state_common_update_rank = 'UPDATE ScanResultTBL SET rank = ?, summary = ? WHERE scan_id = ?'
+        self.state_common_update_exec_end_date = 'UPDATE ScanResultTBL SET exec_end_date = ? WHERE scan_id = ?'
+        self.state_common_update_report_path = 'UPDATE ScanResultTBL ' \
+                                               'SET ' \
+                                               'report_path = ?,' \
+                                               'report_html = ?,' \
+                                               'report_ipynb = ?' \
+                                               'WHERE scan_id = ?'
+        self.state_common_delete = 'DELETE FROM ScanResultTBL WHERE scan_id = ?'
+        self.state_common_delete_all = 'DELETE FROM ScanResultTBL'
+
+        # Query templates for Evasion.
+        self.state_evasion_select = 'SELECT * FROM ScanResultEvasionTBL WHERE status = ?'
+        self.state_evasion_select_id = 'SELECT * FROM ScanResultEvasionTBL WHERE scan_id = ?'
+        self.state_evasion_insert = 'INSERT INTO ScanResultEvasionTBL (' \
+                                    'scan_id, ' \
+                                    'consequence, ' \
+                                    'summary, ' \
+                                    'attack_method, ' \
+                                    'accuracy) VALUES (?,"","",?,"")'
+        self.state_evasion_update_consequence = 'UPDATE ScanResultEvasionTBL ' \
+                                                'SET consequence = ?, summary = ?, accuracy = ? WHERE scan_id = ?'
+        self.state_evasion_delete = 'DELETE FROM ScanResultEvasionTBL WHERE scan_id = ?'
+        self.state_evasion_delete_all = 'DELETE FROM ScanResultEvasionTBL'
+
+        # Query templates for FGSM.
+        self.state_fgsm_select = 'SELECT * FROM EvasionFGSMTBL WHERE status = ?'
+        self.state_fgsm_select_id = 'SELECT * FROM EvasionFGSMTBL WHERE scan_id = ?'
+        self.state_fgsm_insert = 'INSERT INTO EvasionFGSMTBL (' \
+                                 'scan_id, ' \
+                                 'epsilon, ' \
+                                 'epsilon_step, ' \
+                                 'targeted, ' \
+                                 'batch_size) VALUES (?,?,?,?,?)'
+        self.state_fgsm_delete = 'DELETE FROM EvasionFGSMTBL WHERE scan_id = ?'
+        self.state_fgsm_delete_all = 'DELETE FROM EvasionFGSMTBL'
 
     # Initialize Data base.
     def db_initialize(self, db_name):
@@ -93,13 +123,15 @@ class DbControl:
                                  isolation_level=self.isolation_level) as conn:
                 sql_query = ''
                 try:
-                    # Create table.
+                    # Create Common table.
                     sql_query = 'CREATE TABLE IF NOT EXISTS ScanResultTBL(' \
                                 'id INTEGER PRIMARY KEY AUTOINCREMENT, ' \
                                 'scan_id TEXT, ' \
                                 'status TEXT, ' \
                                 'rank TEXT, ' \
+                                'summary TEXT, ' \
                                 'target_path TEXT, ' \
+                                'accuracy REAL, ' \
                                 'x_train_path TEXT, ' \
                                 'x_train_num INTEGER, ' \
                                 'y_train_path TEXT, '\
@@ -117,6 +149,31 @@ class DbControl:
                                 'report_html TEXT, ' \
                                 'report_ipynb TEXT, ' \
                                 'lang TEXT);'
+                    conn.execute('begin transaction')
+                    conn.execute(sql_query)
+                    conn.commit()
+
+                    # Create Evasion table.
+                    sql_query = 'CREATE TABLE IF NOT EXISTS ScanResultEvasionTBL(' \
+                                'id INTEGER PRIMARY KEY AUTOINCREMENT, ' \
+                                'scan_id TEXT, ' \
+                                'consequence TEXT, ' \
+                                'summary TEXT, ' \
+                                'attack_method TEXT, ' \
+                                'accuracy REAL);'
+                    conn.execute('begin transaction')
+                    conn.execute(sql_query)
+                    conn.commit()
+
+                    # Create Evasion using FGSM table.
+                    sql_query = 'CREATE TABLE IF NOT EXISTS EvasionFGSMTBL(' \
+                                'id INTEGER PRIMARY KEY AUTOINCREMENT, ' \
+                                'scan_id TEXT, ' \
+                                'epsilon REAL, ' \
+                                'epsilon_step REAL, ' \
+                                'targeted INTEGER , ' \
+                                'batch_size INTEGER, ' \
+                                'countermeasure TEXT);'
                     conn.execute('begin transaction')
                     conn.execute(sql_query)
                     conn.commit()

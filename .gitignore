@@ -129,7 +129,9 @@ dmypy.json
 .pyre/
 
 # ATD directory
+.idea/
 targets/
 logs/
-reports/*_scan
+sqlite3/
+reports/*_scan/
 reports/pycache

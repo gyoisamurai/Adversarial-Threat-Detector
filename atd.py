@@ -198,7 +198,11 @@ if __name__ == '__main__':
     parser.add_argument('--attack_evasion', default='', choices=['fgsm', 'cnw', 'jsma'],
                         type=str, help='Specify method of Evasion Attack.')
     parser.add_argument('--fgsm_epsilon', default=0.05, choices=[0.01, 0.05, 0.1, 0.15, 0.2, 0.25, 0.3],
-                        type=float, help='Specify Eps for FGSM.')
+                        type=float, help='Specify Epsilon for FGSM.')
+    parser.add_argument('--fgsm_eps_step', default=0.1, choices=[0.1, 0.2, 0.3, 0.4, 0.5],
+                        type=float, help='Specify Epsilon step for FGSM.')
+    parser.add_argument('--fgsm_targeted', action='store_true', help='Specify targeted evasion for FGSM.')
+    parser.add_argument('--fgsm_batch_size', default=32, type=int, help='Specify batch size for FGSM.')
     parser.add_argument('--cnw_confidence', default=0.5, choices=[0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0],
                         type=float, help='Specify Confidence for C&W.')
     parser.add_argument('--jsma_theta', default=0.1, choices=[0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0],
@@ -226,8 +230,8 @@ if __name__ == '__main__':
                         type=int, help='Specify batch size for Adversarial Training.')
     parser.add_argument('--adversarial_training_epochs', default=30, choices=[10, 20, 30, 40, 50],
                         type=int, help='Specify epochs for Adversarial Training.')
-    parser.add_argument('--adversarial_training_shuffle', default=True, choices=[True, False],
-                        type=bool, help='Specify shuffle for Adversarial Training.')
+    parser.add_argument('--adversarial_training_shuffle', action='store_true',
+                        help='Specify shuffle for Adversarial Training.')
 
     parser.add_argument('--lang', default='en', choices=['en', 'ja'], type=str, help='Specify language of report.')
     args = parser.parse_args()
@@ -275,6 +279,22 @@ if __name__ == '__main__':
             attack_method = args.attack_model_poisoning
         elif args.attack_type == 'evasion':
             attack_method = args.attack_evasion
+            utility.insert_new_scan_record_evasion(args.scan_id, attack_method)
+            if args.attack_evasion == 'fgsm':
+                # Insert values to FGSM table.
+                utility.insert_new_scan_record_fgsm(args.scan_id,
+                                                    args.fgsm_epsilon,
+                                                    args.fgsm_eps_step,
+                                                    args.fgsm_targeted,
+                                                    args.fgsm_batch_size)
+            elif args.attack_evasion == 'cnw':
+                # TODO: CNWのレコードを追加すること。
+                # Insert values to CnW table.
+                utility.print_message(WARNING, 'Not implementation: {}'.format(args.attack_evasion))
+            elif args.attack_evasion == 'jsma':
+                # TODO: JSMAのレコードを追加すること。
+                # Insert values to JSMA table.
+                utility.print_message(WARNING, 'Not implementation: {}'.format(args.attack_evasion))
         elif args.attack_type == 'exfiltration':
             attack_method = args.attack_exfiltration
 
@@ -282,14 +302,15 @@ if __name__ == '__main__':
         # TODO: ディフェンスタイプを設定すること。
         defence_method = ''
         if args.defence_type == 'data_poisoning':
-            attack_method = args.attack_data_poisoning
-        elif args.attack_type == 'model_poisoning':
-            attack_method = args.attack_model_poisoning
-        elif args.attack_type == 'evasion':
-            attack_method = args.attack_evasion
-        elif args.attack_type == 'exfiltration':
-            attack_method = args.attack_exfiltration
+            defence_method = args.attack_data_poisoning
+        elif args.defence_type == 'model_poisoning':
+            defence_method = args.attack_model_poisoning
+        elif args.defence_type == 'evasion':
+            defence_method = args.attack_evasion
+        elif args.defence_type == 'exfiltration':
+            defence_method = args.attack_exfiltration
 
+        # Insert values to Common table.
         utility.insert_new_scan_record(args.scan_id,
                                        'Scanning',
                                        args.model_name,
@@ -323,6 +344,7 @@ if __name__ == '__main__':
         else:
             utility.print_message(OK, 'Accuracy on Benign Examples : {}%'.format(acc_benign * 100))
             report_util.template_target['accuracy'] = '{}%'.format(acc_benign * 100)
+            utility.update_accuracy(args.scan_id, acc_benign * 100)
 
         # Execute scanning.
         ret_status, report_util = attack(utility, args, classifier, X_test, y_test, report_util)
@@ -337,15 +359,36 @@ if __name__ == '__main__':
         report_html.lang = args.lang
         report_html.create_report()
 
+        # Update tables.
         if args.scan_id != '':
-            # Update scan status.
+            # Update scan status, rank, summary, report path so on.
             utility.update_status(args.scan_id, 'Done')
-
-            # Update scan record.
-            utility.update_report_path(args.scan_id, report_path, report_html.report_util.report_name, report_ipynb_name)
-
-            # Update end datetime of scan.
+            utility.update_rank_summary(args.scan_id,
+                                        report_html.report_util.template_target['rank'],
+                                        report_html.report_util.template_target['summary'])
+            utility.update_report_path(args.scan_id,
+                                       report_path,
+                                       report_html.report_util.report_name,
+                                       report_ipynb_name)
             utility.update_exec_end_date(args.scan_id, utility.get_current_date())
+
+            if args.attack_type == 'data_poisoning':
+                # TODO: Data Poisoningのレコードを追加すること。
+                # Insert values to data poisoning table.
+                utility.print_message(WARNING, 'Not implementation: {}'.format(args.attack_type))
+            elif args.attack_type == 'model_poisoning':
+                # TODO: Model Poisoningのレコードを追加すること。
+                # Insert values to model poisoning table.
+                utility.print_message(WARNING, 'Not implementation: {}'.format(args.attack_type))
+            elif args.attack_type == 'evasion':
+                utility.update_consequence_evasion(args.scan_id,
+                                                   report_html.report_util.template_evasion['consequence'],
+                                                   report_html.report_util.template_evasion['summary'],
+                                                   report_html.report_util.template_evasion['accuracy'])
+            elif args.attack_type == 'exfiltration':
+                # TODO: Exfiltrationのレコードを追加すること。
+                # Insert values to exfiltration table.
+                utility.print_message(WARNING, 'Not implementation: {}'.format(args.attack_type))
     elif args.op_type == 'defence':
         # Load test data.
         ret_status, _, _, X_train, y_train = utility.load_dataset(args.train_data_name,
