@@ -215,10 +215,10 @@ class Utilty:
         self.print_message(OK, 'Saved model: {}'.format(save_full_path))
 
     # Save Adversarial Examples to Image file.
-    def save_adv_images(self, idx, method, X_adv, report_path, img_path):
+    def save_adv_images(self, idx, label, X_adv, report_path, img_path):
         scale = 255.0 / np.max(X_adv)
         pil_img = Image.fromarray(np.uint8(X_adv * scale))
-        img_path = os.path.join(img_path, 'adv_{}_{}.jpg'.format(method, idx+1))
+        img_path = os.path.join(img_path, '{}_{}.jpg'.format(label, idx+1))
         save_full_path = os.path.join(report_path, img_path)
         pil_img.save(save_full_path)
         self.print_message(OK, 'Saved Adversarial Examples to image file: {}'.format(save_full_path))

@@ -75,11 +75,11 @@ class ReportUtility:
         return self.report_path
 
     # Make image file for Adversarial Examples.
-    def make_image(self, X_adv, method, sampling_idx):
+    def make_image(self, X_adv, label, sampling_idx):
         save_path_list = []
         for count_idx, adv_idx in enumerate(sampling_idx):
             save_path_list.append(self.utility.save_adv_images(count_idx,
-                                                               method,
+                                                               label,
                                                                X_adv[adv_idx],
                                                                self.report_path,
                                                                self.adv_image_path))
