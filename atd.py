@@ -87,13 +87,13 @@ def attack(utility, args, classifier, X_test, y_test, report_util):
         # Carlini and Wagner Attack.
         elif args.attack_evasion == 'cnw':
             cnw = CarliniL2(utility=utility, model=classifier, dataset=X_test)
-            X_adv_cnw = cnw.attack(confidence=args.cnw_confidence)
+            X_adv_cnw = cnw.attack(confidence=args.cnw_confidence, batch_size=args.cnw_batch_size)
             ret_status, report_util = utility.evaluate_aes('cnw', classifier, X_adv_cnw, y_test, acc_benign,
                                                            sampling_idx, report_util)
         # Jacobian Saliency Map Attack.
         elif args.attack_evasion == 'jsma':
             jsma = JSMA(utility=utility, model=classifier, dataset=X_test)
-            X_adv_jsma = jsma.attack(theta=args.theta, gamma=args.gamma)
+            X_adv_jsma = jsma.attack(theta=args.jsma_theta, gamma=args.jsma_gamma, batch_size=args.jsma_batch_size)
             ret_status, report_util = utility.evaluate_aes('jsma', classifier, X_adv_jsma, y_test, acc_benign,
                                                            sampling_idx, report_util)
     # Evaluate Exfiltration Attacks.
@@ -172,6 +172,7 @@ if __name__ == '__main__':
 
     # Parse arguments.
     parser = argparse.ArgumentParser(description='Adversarial Threat Detector.')
+    parser.add_argument('--target_id', default='', type=int, help='Target\'s identifier for GyoiBoard.')
     parser.add_argument('--scan_id', default='', type=str, help='Scan\'s identifier for GyoiBoard.')
     parser.add_argument('--model_name', default='', type=str, help='Target model name.')
     parser.add_argument('--train_data_name', default='X_train.npz', type=str, help='Training dataset name.')
@@ -203,12 +204,14 @@ if __name__ == '__main__':
                         type=float, help='Specify Epsilon step for FGSM.')
     parser.add_argument('--fgsm_targeted', action='store_true', help='Specify targeted evasion for FGSM.')
     parser.add_argument('--fgsm_batch_size', default=32, type=int, help='Specify batch size for FGSM.')
-    parser.add_argument('--cnw_confidence', default=0.5, choices=[0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0],
+    parser.add_argument('--cnw_confidence', default=0.0, choices=[0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0],
                         type=float, help='Specify Confidence for C&W.')
+    parser.add_argument('--cnw_batch_size', default=1, type=int, help='Specify batch size for CnW.')
     parser.add_argument('--jsma_theta', default=0.1, choices=[0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0],
                         type=float, help='Specify Theta for JSMA.')
     parser.add_argument('--jsma_gamma', default=1.0, choices=[0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0],
                         type=float, help='Specify Gamma for JSMA.')
+    parser.add_argument('--jsma_batch_size', default=1, type=int, help='Specify batch size for JSMA.')
 
     parser.add_argument('--attack_exfiltration', default='',
                         choices=['membership_inference', 'label_only', 'inversion'],
@@ -279,22 +282,28 @@ if __name__ == '__main__':
             attack_method = args.attack_model_poisoning
         elif args.attack_type == 'evasion':
             attack_method = args.attack_evasion
-            utility.insert_new_scan_record_evasion(args.scan_id, attack_method)
+            utility.insert_new_scan_record_evasion(args.target_id, args.scan_id, attack_method)
             if args.attack_evasion == 'fgsm':
                 # Insert values to FGSM table.
-                utility.insert_new_scan_record_fgsm(args.scan_id,
+                utility.insert_new_scan_record_fgsm(args.target_id,
+                                                    args.scan_id,
                                                     args.fgsm_epsilon,
                                                     args.fgsm_eps_step,
                                                     args.fgsm_targeted,
                                                     args.fgsm_batch_size)
             elif args.attack_evasion == 'cnw':
-                # TODO: CNWのレコードを追加すること。
                 # Insert values to CnW table.
-                utility.print_message(WARNING, 'Not implementation: {}'.format(args.attack_evasion))
+                utility.insert_new_scan_record_cnw(args.target_id,
+                                                   args.scan_id,
+                                                   args.cnw_confidence,
+                                                   args.cnw_batch_size)
             elif args.attack_evasion == 'jsma':
-                # TODO: JSMAのレコードを追加すること。
                 # Insert values to JSMA table.
-                utility.print_message(WARNING, 'Not implementation: {}'.format(args.attack_evasion))
+                utility.insert_new_scan_record_jsma(args.target_id,
+                                                    args.scan_id,
+                                                    args.jsma_theta,
+                                                    args.jsma_gamma,
+                                                    args.jsma_batch_size)
         elif args.attack_type == 'exfiltration':
             attack_method = args.attack_exfiltration
 
@@ -311,7 +320,8 @@ if __name__ == '__main__':
             defence_method = args.attack_exfiltration
 
         # Insert values to Common table.
-        utility.insert_new_scan_record(args.scan_id,
+        utility.insert_new_scan_record(args.target_id,
+                                       args.scan_id,
                                        'Scanning',
                                        args.model_name,
                                        args.train_data_name,

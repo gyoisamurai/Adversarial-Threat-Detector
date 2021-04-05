@@ -51,6 +51,7 @@ class DbControl:
         self.state_common_select = 'SELECT * FROM ScanResultTBL WHERE status = ?'
         self.state_common_select_id = 'SELECT * FROM ScanResultTBL WHERE scan_id = ?'
         self.state_common_insert = 'INSERT INTO ScanResultTBL (' \
+                                   'target_id, ' \
                                    'scan_id,' \
                                    'status,' \
                                    'rank,' \
@@ -73,7 +74,7 @@ class DbControl:
                                    'report_path, ' \
                                    'report_html,' \
                                    'report_ipynb,' \
-                                   'lang) VALUES (?,?,"","",?,"",?,?,?,?,?,?,?,?,?,?,?,?,"","","","",?)'
+                                   'lang) VALUES (?,?,?,"","",?,"",?,?,?,?,?,?,?,?,?,?,?,?,"","","","",?)'
         self.state_common_update_accuracy = 'UPDATE ScanResultTBL SET accuracy = ? WHERE scan_id = ?'
         self.state_common_update_status = 'UPDATE ScanResultTBL SET status = ? WHERE scan_id = ?'
         self.state_common_update_rank = 'UPDATE ScanResultTBL SET rank = ?, summary = ? WHERE scan_id = ?'
@@ -91,11 +92,12 @@ class DbControl:
         self.state_evasion_select = 'SELECT * FROM ScanResultEvasionTBL WHERE status = ?'
         self.state_evasion_select_id = 'SELECT * FROM ScanResultEvasionTBL WHERE scan_id = ?'
         self.state_evasion_insert = 'INSERT INTO ScanResultEvasionTBL (' \
+                                    'target_id, ' \
                                     'scan_id, ' \
                                     'consequence, ' \
                                     'summary, ' \
                                     'attack_method, ' \
-                                    'accuracy) VALUES (?,"","",?,"")'
+                                    'accuracy) VALUES (?,?,"","",?,"")'
         self.state_evasion_update_consequence = 'UPDATE ScanResultEvasionTBL ' \
                                                 'SET consequence = ?, summary = ?, accuracy = ? WHERE scan_id = ?'
         self.state_evasion_delete = 'DELETE FROM ScanResultEvasionTBL WHERE scan_id = ?'
@@ -105,13 +107,37 @@ class DbControl:
         self.state_fgsm_select = 'SELECT * FROM EvasionFGSMTBL WHERE status = ?'
         self.state_fgsm_select_id = 'SELECT * FROM EvasionFGSMTBL WHERE scan_id = ?'
         self.state_fgsm_insert = 'INSERT INTO EvasionFGSMTBL (' \
+                                 'target_id, ' \
                                  'scan_id, ' \
                                  'epsilon, ' \
                                  'epsilon_step, ' \
                                  'targeted, ' \
-                                 'batch_size) VALUES (?,?,?,?,?)'
+                                 'batch_size) VALUES (?,?,?,?,?,?)'
         self.state_fgsm_delete = 'DELETE FROM EvasionFGSMTBL WHERE scan_id = ?'
         self.state_fgsm_delete_all = 'DELETE FROM EvasionFGSMTBL'
+
+        # Query templates for CnW.
+        self.state_cnw_select = 'SELECT * FROM EvasionCnWTBL WHERE status = ?'
+        self.state_cnw_select_id = 'SELECT * FROM EvasionCnWTBL WHERE scan_id = ?'
+        self.state_cnw_insert = 'INSERT INTO EvasionCnWTBL (' \
+                                'target_id, ' \
+                                'scan_id, ' \
+                                'confidence, ' \
+                                'batch_size) VALUES (?,?,?,?)'
+        self.state_fgsm_delete = 'DELETE FROM EvasionCnWTBL WHERE scan_id = ?'
+        self.state_fgsm_delete_all = 'DELETE FROM EvasionCnWTBL'
+
+        # Query templates for JSMA.
+        self.state_jsma_select = 'SELECT * FROM EvasionJSMATBL WHERE status = ?'
+        self.state_jsma_select_id = 'SELECT * FROM EvasionJSMATBL WHERE scan_id = ?'
+        self.state_jsma_insert = 'INSERT INTO EvasionJSMATBL (' \
+                                'target_id, ' \
+                                'scan_id, ' \
+                                'theta, ' \
+                                'gamma, ' \
+                                'batch_size) VALUES (?,?,?,?,?)'
+        self.state_jsma_delete = 'DELETE FROM EvasionJSMATBL WHERE scan_id = ?'
+        self.state_jsma_delete_all = 'DELETE FROM EvasionJSMATBL'
 
     # Initialize Data base.
     def db_initialize(self, db_name):
@@ -126,6 +152,7 @@ class DbControl:
                     # Create Common table.
                     sql_query = 'CREATE TABLE IF NOT EXISTS ScanResultTBL(' \
                                 'id INTEGER PRIMARY KEY AUTOINCREMENT, ' \
+                                'target_id INTEGER, ' \
                                 'scan_id TEXT, ' \
                                 'status TEXT, ' \
                                 'rank TEXT, ' \
@@ -156,6 +183,7 @@ class DbControl:
                     # Create Evasion table.
                     sql_query = 'CREATE TABLE IF NOT EXISTS ScanResultEvasionTBL(' \
                                 'id INTEGER PRIMARY KEY AUTOINCREMENT, ' \
+                                'target_id INTEGER, ' \
                                 'scan_id TEXT, ' \
                                 'consequence TEXT, ' \
                                 'summary TEXT, ' \
@@ -168,6 +196,7 @@ class DbControl:
                     # Create Evasion using FGSM table.
                     sql_query = 'CREATE TABLE IF NOT EXISTS EvasionFGSMTBL(' \
                                 'id INTEGER PRIMARY KEY AUTOINCREMENT, ' \
+                                'target_id INTEGER, ' \
                                 'scan_id TEXT, ' \
                                 'epsilon REAL, ' \
                                 'epsilon_step REAL, ' \
@@ -177,6 +206,32 @@ class DbControl:
                     conn.execute('begin transaction')
                     conn.execute(sql_query)
                     conn.commit()
+
+                    # Create Evasion using CnW table.
+                    sql_query = 'CREATE TABLE IF NOT EXISTS EvasionCnWTBL(' \
+                                'id INTEGER PRIMARY KEY AUTOINCREMENT, ' \
+                                'target_id INTEGER, ' \
+                                'scan_id TEXT, ' \
+                                'confidence REAL, ' \
+                                'batch_size INTEGER, ' \
+                                'countermeasure TEXT);'
+                    conn.execute('begin transaction')
+                    conn.execute(sql_query)
+                    conn.commit()
+
+                    # Create Evasion using JSMA table.
+                    sql_query = 'CREATE TABLE IF NOT EXISTS EvasionJSMATBL(' \
+                                'id INTEGER PRIMARY KEY AUTOINCREMENT, ' \
+                                'target_id INTEGER, ' \
+                                'scan_id TEXT, ' \
+                                'theta REAL, ' \
+                                'gamma REAL, ' \
+                                'batch_size INTEGER, ' \
+                                'countermeasure TEXT);'
+                    conn.execute('begin transaction')
+                    conn.execute(sql_query)
+                    conn.commit()
+
                     self.conn = conn
                 except Exception as e:
                     self.utility.print_message(FAIL, 'Could not create {} table: {}'.format(db_name, sql_query))

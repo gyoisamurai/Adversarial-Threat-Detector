@@ -283,11 +283,12 @@ class Utilty:
         return target_date.strftime(self.report_date_format)
 
     # Insert new scan record to Common table.
-    def insert_new_scan_record(self, scan_id, status, target_path, x_train_path, x_train_num, y_train_path,
+    def insert_new_scan_record(self, target_id, scan_id, status, target_path, x_train_path, x_train_num, y_train_path,
                                x_test_path, x_test_num, y_test_path, operation_type, attack_type, attack_method,
                                defence_type, defence_method, exec_start_date, lang):
         try:
-            self.sql.insert(self.sql.conn, self.sql.state_common_insert, (scan_id,
+            self.sql.insert(self.sql.conn, self.sql.state_common_insert, (target_id,
+                                                                          scan_id,
                                                                           status,
                                                                           target_path,
                                                                           x_train_path,
@@ -303,7 +304,7 @@ class Utilty:
                                                                           defence_method,
                                                                           exec_start_date,
                                                                           lang))
-            self.print_message(OK, 'Inserted new record to Common table for {}'.format(scan_id))
+            self.print_message(OK, 'Inserted new record to Common table for Target ID: {}'.format(target_id))
         except Exception as e:
             self.print_exception(e, 'Could not insert new user.')
         return
@@ -354,10 +355,10 @@ class Utilty:
         return
 
     # Insert new scan record to Evasion table.
-    def insert_new_scan_record_evasion(self, scan_id, attack_method):
+    def insert_new_scan_record_evasion(self, target_id, scan_id, attack_method):
         try:
-            self.sql.insert(self.sql.conn, self.sql.state_evasion_insert, (scan_id, attack_method))
-            self.print_message(OK, 'Inserted new record to Evasion table for {}'.format(scan_id))
+            self.sql.insert(self.sql.conn, self.sql.state_evasion_insert, (target_id, scan_id, attack_method))
+            self.print_message(OK, 'Inserted new record to Evasion table for Target ID: {}'.format(target_id))
         except Exception as e:
             self.print_exception(e, 'Could not insert new user to ScanResultEvasionTBL.')
         return
@@ -374,14 +375,40 @@ class Utilty:
         return
 
     # Insert new scan record to FGSM table.
-    def insert_new_scan_record_fgsm(self, scan_id, epsilon, epsilon_step, targeted, batch_size):
+    def insert_new_scan_record_fgsm(self, target_id, scan_id, epsilon, epsilon_step, targeted, batch_size):
         try:
-            self.sql.insert(self.sql.conn, self.sql.state_fgsm_insert, (scan_id,
+            self.sql.insert(self.sql.conn, self.sql.state_fgsm_insert, (target_id,
+                                                                        scan_id,
                                                                         epsilon,
                                                                         epsilon_step,
                                                                         targeted,
                                                                         batch_size))
-            self.print_message(OK, 'Inserted new record to FGSM table gffor {}'.format(scan_id))
+            self.print_message(OK, 'Inserted new record to FGSM table for Target ID: {}'.format(target_id))
         except Exception as e:
             self.print_exception(e, 'Could not insert new user to EvasionFGSMTBL.')
+        return
+
+    # Insert new scan record to CnW table.
+    def insert_new_scan_record_cnw(self, target_id, scan_id, confidence, batch_size):
+        try:
+            self.sql.insert(self.sql.conn, self.sql.state_cnw_insert, (target_id,
+                                                                       scan_id,
+                                                                       confidence,
+                                                                       batch_size))
+            self.print_message(OK, 'Inserted new record to CnW table for Target ID: {}'.format(target_id))
+        except Exception as e:
+            self.print_exception(e, 'Could not insert new user to EvasionCnWTBL.')
+        return
+
+    # Insert new scan record to JSMA table.
+    def insert_new_scan_record_jsma(self, target_id, scan_id, theta, gamma, batch_size):
+        try:
+            self.sql.insert(self.sql.conn, self.sql.state_jsma_insert, (target_id,
+                                                                        scan_id,
+                                                                        theta,
+                                                                        gamma,
+                                                                        batch_size))
+            self.print_message(OK, 'Inserted new record to JSMA table for Target ID: {}'.format(target_id))
+        except Exception as e:
+            self.print_exception(e, 'Could not insert new user to EvasionJSMATBL.')
         return

@@ -26,13 +26,13 @@ class JSMA:
         self.dataset = dataset
 
     # Create Adversarial Examples.
-    def attack(self, theta=0.1, gamma=1.0):
+    def attack(self, theta=0.1, gamma=1.0, batch_size=1):
         # Create Adversarial Examples using JSMA.
         self.utility.print_message(NOTE, 'Creating Adversarial Examples using JSMA.')
         attack = SaliencyMapMethod(classifier=self.model,
                                    theta=theta,
                                    gamma=gamma,
-                                   batch_size=1,
+                                   batch_size=batch_size,
                                    verbose=True)
         X_adv = attack.generate(x=self.dataset)
         return X_adv

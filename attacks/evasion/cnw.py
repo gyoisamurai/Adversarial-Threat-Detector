@@ -26,7 +26,7 @@ class CarliniL2:
         self.dataset = dataset
 
     # Create Adversarial Examples.
-    def attack(self, confidence=0.5):
+    def attack(self, confidence=0.0, batch_size=1):
         # Create Adversarial Examples using Carlini and Wagner L_2 Attack.
         self.utility.print_message(NOTE, 'Creating Adversarial Examples using Carlini and Wagner L_2 Attack.')
         attack = CarliniL2Method(classifier=self.model,
@@ -38,7 +38,7 @@ class CarliniL2:
                                  initial_const=0.01,
                                  max_halving=5,
                                  max_doubling=5,
-                                 batch_size=1,
+                                 batch_size=batch_size,
                                  verbose=True)
         X_adv = attack.generate(x=self.dataset)
         return X_adv
