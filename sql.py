@@ -112,7 +112,8 @@ class DbControl:
                                  'epsilon, ' \
                                  'epsilon_step, ' \
                                  'targeted, ' \
-                                 'batch_size) VALUES (?,?,?,?,?,?)'
+                                 'batch_size, ' \
+                                 'dataset_num) VALUES (?,?,?,?,?,?,?)'
         self.state_fgsm_delete = 'DELETE FROM EvasionFGSMTBL WHERE scan_id = ?'
         self.state_fgsm_delete_all = 'DELETE FROM EvasionFGSMTBL'
 
@@ -123,19 +124,21 @@ class DbControl:
                                 'target_id, ' \
                                 'scan_id, ' \
                                 'confidence, ' \
-                                'batch_size) VALUES (?,?,?,?)'
-        self.state_fgsm_delete = 'DELETE FROM EvasionCnWTBL WHERE scan_id = ?'
-        self.state_fgsm_delete_all = 'DELETE FROM EvasionCnWTBL'
+                                'batch_size, ' \
+                                'dataset_num) VALUES (?,?,?,?,?)'
+        self.state_cnw_delete = 'DELETE FROM EvasionCnWTBL WHERE scan_id = ?'
+        self.state_cnw_delete_all = 'DELETE FROM EvasionCnWTBL'
 
         # Query templates for JSMA.
         self.state_jsma_select = 'SELECT * FROM EvasionJSMATBL WHERE status = ?'
         self.state_jsma_select_id = 'SELECT * FROM EvasionJSMATBL WHERE scan_id = ?'
         self.state_jsma_insert = 'INSERT INTO EvasionJSMATBL (' \
-                                'target_id, ' \
-                                'scan_id, ' \
-                                'theta, ' \
-                                'gamma, ' \
-                                'batch_size) VALUES (?,?,?,?,?)'
+                                 'target_id, ' \
+                                 'scan_id, ' \
+                                 'theta, ' \
+                                 'gamma, ' \
+                                 'batch_size, ' \
+                                 'dataset_num) VALUES (?,?,?,?,?,?)'
         self.state_jsma_delete = 'DELETE FROM EvasionJSMATBL WHERE scan_id = ?'
         self.state_jsma_delete_all = 'DELETE FROM EvasionJSMATBL'
 
@@ -202,6 +205,7 @@ class DbControl:
                                 'epsilon_step REAL, ' \
                                 'targeted INTEGER , ' \
                                 'batch_size INTEGER, ' \
+                                'dataset_num INTEGER, ' \
                                 'countermeasure TEXT);'
                     conn.execute('begin transaction')
                     conn.execute(sql_query)
@@ -214,6 +218,7 @@ class DbControl:
                                 'scan_id TEXT, ' \
                                 'confidence REAL, ' \
                                 'batch_size INTEGER, ' \
+                                'dataset_num INTEGER, ' \
                                 'countermeasure TEXT);'
                     conn.execute('begin transaction')
                     conn.execute(sql_query)
@@ -227,6 +232,7 @@ class DbControl:
                                 'theta REAL, ' \
                                 'gamma REAL, ' \
                                 'batch_size INTEGER, ' \
+                                'dataset_num INTEGER, ' \
                                 'countermeasure TEXT);'
                     conn.execute('begin transaction')
                     conn.execute(sql_query)

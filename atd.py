@@ -181,7 +181,7 @@ if __name__ == '__main__':
     parser.add_argument('--use_x_test_num', default=1000, type=int, help='Dataset number for X_test.')
     parser.add_argument('--train_label_name', default='y_train.npz', type=str, help='Train label name.')
     parser.add_argument('--test_label_name', default='y_test.npz', type=str, help='Test label name.')
-    parser.add_argument('--op_type', default='', choices=['attack', 'defence'], type=str, help='operation type.')
+    parser.add_argument('--op_type', default='', choices=['attack', 'defence', 'test'], type=str, help='operation type.')
 
     # Attack.
     parser.add_argument('--attack_type', default='',
@@ -290,20 +290,23 @@ if __name__ == '__main__':
                                                     args.fgsm_epsilon,
                                                     args.fgsm_eps_step,
                                                     args.fgsm_targeted,
-                                                    args.fgsm_batch_size)
+                                                    args.fgsm_batch_size,
+                                                    args.use_x_test_num)
             elif args.attack_evasion == 'cnw':
                 # Insert values to CnW table.
                 utility.insert_new_scan_record_cnw(args.target_id,
                                                    args.scan_id,
                                                    args.cnw_confidence,
-                                                   args.cnw_batch_size)
+                                                   args.cnw_batch_size,
+                                                   args.use_x_test_num)
             elif args.attack_evasion == 'jsma':
                 # Insert values to JSMA table.
                 utility.insert_new_scan_record_jsma(args.target_id,
                                                     args.scan_id,
                                                     args.jsma_theta,
                                                     args.jsma_gamma,
-                                                    args.jsma_batch_size)
+                                                    args.jsma_batch_size,
+                                                    args.use_x_test_num)
         elif args.attack_type == 'exfiltration':
             attack_method = args.attack_exfiltration
 

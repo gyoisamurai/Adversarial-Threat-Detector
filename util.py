@@ -116,11 +116,10 @@ class Utilty:
         return ret_status
 
     # Load model.
-    def load_model(self, model_name):
+    def load_model(self, model_path):
         ret_status = True
 
         try:
-            model_path = os.path.join(self.target_dir, model_name)
             if os.path.exists(model_path) is False:
                 ret_status = False
                 self.print_message(FAIL, 'Model path not Found: {}'.format(model_path))
@@ -135,13 +134,11 @@ class Utilty:
             return ret_status, None, None
 
     # Load dataset/label from npz.
-    def load_dataset(self, dataset_name, label_name, use_dataset_num):
+    def load_dataset(self, dataset_path, label_path, use_dataset_num):
         ret_status = True
 
-        dataset_path = os.path.join(self.target_dir, dataset_name)
-        label_path = os.path.join(self.target_dir, label_name)
         if os.path.exists(dataset_path) is False or os.path.exists(label_path) is False:
-            self.print_message(FAIL, 'Dataset or Label path not Found: {}/{}'.format(dataset_path, label_path))
+            self.print_message(FAIL, 'Dataset or Label path not Found: "{}" / "{}"'.format(dataset_path, label_path))
             ret_status = False
             return ret_status, None, None, None, None
         else:
@@ -375,39 +372,42 @@ class Utilty:
         return
 
     # Insert new scan record to FGSM table.
-    def insert_new_scan_record_fgsm(self, target_id, scan_id, epsilon, epsilon_step, targeted, batch_size):
+    def insert_new_scan_record_fgsm(self, target_id, scan_id, epsilon, epsilon_step, targeted, batch_size, dataset_num):
         try:
             self.sql.insert(self.sql.conn, self.sql.state_fgsm_insert, (target_id,
                                                                         scan_id,
                                                                         epsilon,
                                                                         epsilon_step,
                                                                         targeted,
-                                                                        batch_size))
+                                                                        batch_size,
+                                                                        dataset_num))
             self.print_message(OK, 'Inserted new record to FGSM table for Target ID: {}'.format(target_id))
         except Exception as e:
             self.print_exception(e, 'Could not insert new user to EvasionFGSMTBL.')
         return
 
     # Insert new scan record to CnW table.
-    def insert_new_scan_record_cnw(self, target_id, scan_id, confidence, batch_size):
+    def insert_new_scan_record_cnw(self, target_id, scan_id, confidence, batch_size, dataset_num):
         try:
             self.sql.insert(self.sql.conn, self.sql.state_cnw_insert, (target_id,
                                                                        scan_id,
                                                                        confidence,
-                                                                       batch_size))
+                                                                       batch_size,
+                                                                       dataset_num))
             self.print_message(OK, 'Inserted new record to CnW table for Target ID: {}'.format(target_id))
         except Exception as e:
             self.print_exception(e, 'Could not insert new user to EvasionCnWTBL.')
         return
 
     # Insert new scan record to JSMA table.
-    def insert_new_scan_record_jsma(self, target_id, scan_id, theta, gamma, batch_size):
+    def insert_new_scan_record_jsma(self, target_id, scan_id, theta, gamma, batch_size, dataset_num):
         try:
             self.sql.insert(self.sql.conn, self.sql.state_jsma_insert, (target_id,
                                                                         scan_id,
                                                                         theta,
                                                                         gamma,
-                                                                        batch_size))
+                                                                        batch_size,
+                                                                        dataset_num))
             self.print_message(OK, 'Inserted new record to JSMA table for Target ID: {}'.format(target_id))
         except Exception as e:
             self.print_exception(e, 'Could not insert new user to EvasionJSMATBL.')
