@@ -303,7 +303,20 @@
             <section id="executive_summary" class="executive_summary clearfix">
                 <div class="summary-txt">
                     <h2 class="h2_icon">Executive Summary</h2>
-                    <p><span><font color="red">{{ target.rank }}</font></span><br><b>{{ target.summary }}</b></p>
+                    <p>
+                        {% if target.rank == "Critical" %}
+                        <span style="color: purple">
+                        {% elif target.rank == "Weak" %}
+                        <span style="color: red">
+                        {% elif target.rank == "Normal" %}
+                        <span style="color: yellow">
+                        {% else %}
+                        <span style="color: blue">
+                        {% endif %}
+                        {{ target.rank }}
+                        </span><br>
+                        <b>{{ target.summary }}</b>
+                    </p>
                 </div>
             </section>
 
@@ -486,6 +499,7 @@
                         <ul>
                             <li>Scan Date : {{ evasion.fgsm.date }}</li>
                             <li>Consequence : {{ evasion.fgsm.consequence }}</li>
+                            <li>Accuracy on AE : {{ evasion.fgsm.accuracy }}%</li>
                             <li>Replay's ipynb : {{ evasion.fgsm.ipynb_path }}</li>
                             <li>Countermeasure : {{ evasion.fgsm.countermeasure }}</li>
                         </ul>
@@ -508,7 +522,8 @@
                         <ul>
                             <li>Scan Date : {{ evasion.cnw.date }}</li>
                             <li>Consequence : {{ evasion.cnw.consequence }}</li>
-                            <li>Replay's ipynb : {{ evasion.cnw.ipynb_path }}</li>
+                            <li>Accuracy on AE : {{ evasion.cnw.accuracy }}%</li>
+                            <li>Replay's ipynb : N/A</li>
                             <li>Countermeasure : {{ evasion.cnw.countermeasure }}</li>
                         </ul>
                         <p>Adversarial Examples</p>
@@ -530,7 +545,8 @@
                         <ul>
                             <li>Scan Date : {{ evasion.jsma.date }}</li>
                             <li>Consequence : {{ evasion.jsma.consequence }}</li>
-                            <li>Replay's ipynb : {{ evasion.jsma.ipynb_path }}</li>
+                            <li>Accuracy on AE : {{ evasion.jsma.accuracy }}%</li>
+                            <li>Replay's ipynb : N/A</li>
                             <li>Countermeasure : {{ evasion.jsma.countermeasure }}</li>
                         </ul>
                         <p>Adversarial Examples</p>

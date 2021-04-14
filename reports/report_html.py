@@ -39,7 +39,6 @@ class HtmlReport:
         if self.lang == 'en':
             # English.
             template = env.get_template(self.report_util.template)
-            self.report_util.template_target['rank'] = Summary.summary_executive_rank.value
             self.report_util.template_target['summary'] = Summary.summary_executive_text.value
             if self.report_util.template_data_poisoning['exist']:
                 self.report_util.template_data_poisoning['summary'] = Summary.summary_data_poisoning.value
@@ -52,7 +51,6 @@ class HtmlReport:
         else:
             # Japanese.
             template = env.get_template(self.report_util.template_ja)
-            self.report_util.template_target['rank'] = Summary.summary_executive_rank_ja.value
             self.report_util.template_target['summary'] = Summary.summary_executive_text_ja.value
             if self.report_util.template_data_poisoning['exist']:
                 self.report_util.template_data_poisoning['summary'] = Summary.summary_data_poisoning_ja.value
@@ -62,8 +60,6 @@ class HtmlReport:
                 self.report_util.template_evasion['summary'] = Summary.summary_evasion_ja.value
             if self.report_util.template_exfiltration['exist']:
                 self.report_util.template_exfiltration['summary'] = Summary.summary_exfiltration_ja.value
-
-        # pd.set_option('display.max_colwidth', -1)
 
         # Data to template.
         html = template.render(target=self.report_util.template_target,

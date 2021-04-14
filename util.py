@@ -192,6 +192,9 @@ class Utilty:
         try:
             preds = model.predict(X_test)
             accuracy = np.sum(np.argmax(preds, axis=1) == np.argmax(y_test, axis=1)) / len(y_test)
+            if accuracy == 0.0:
+                self.print_message(WARNING, 'The model or dataset may be wrong. Accuracy: {}'.format(accuracy * 100))
+                ret_status = False
             return ret_status, accuracy
         except Exception as e:
             ret_status = False
@@ -228,6 +231,21 @@ class Utilty:
         self.print_message(OK, 'Saved Adversarial Examples to npz file: {}'.format(save_full_path))
         return save_full_path + '.npz'
 
+    # Decision rank of evasion attack.
+    def decision_rank_evasion(self, acc_benign, acc_aes):
+        rank = ''
+        score = acc_aes / acc_benign
+        if score <= 0.25:
+            rank = 'Critical'
+        elif score <= 0.5:
+            rank = 'Weak'
+        elif score <= 0.75:
+            rank = 'Normal'
+        else:
+            rank = 'Secure'
+        self.print_message(WARNING, 'Your model is "{}"'.format(rank))
+        return rank
+
     # Evaluation Evasion Attack.
     def evaluate_aes(self, attack_method, target_classifier, X_adv, y_test, acc_benign, sampling_idx, report_util):
         ret_status = True
@@ -239,16 +257,21 @@ class Utilty:
         if ret_status is False:
             return ret_status, None
 
-        self.print_message(WARNING, 'Accuracy on AEs ({})      : {}%'.format(attack_method, acc_adv * 100))
+        rank = self.decision_rank_evasion(acc_benign, acc_adv)
+        self.print_message(WARNING, 'Accuracy on AEs ({})      : {}%, rank="{}"'.format(attack_method,
+                                                                                        acc_adv * 100,
+                                                                                        rank))
         aes_sample_list = report_util.make_image(X_adv, attack_method, sampling_idx)
         adv_path = self.save_adv_npz(attack_method, X_adv, report_util.report_path)
         report_util.template_evasion[attack_method]['aes_path'] = adv_path
         for (sample_path, elem) in zip(aes_sample_list, report_util.template_evasion[attack_method]['ae_img'].keys()):
             report_util.template_evasion[attack_method]['ae_img'][elem] = sample_path
-        if acc_benign > acc_adv:
-            report_util.template_evasion['consequence'] = 'Weak'
-            report_util.template_evasion[attack_method]['consequence'] = 'Weak'
+        report_util.template_target['rank'] = rank
+        report_util.template_evasion['consequence'] = rank
+        report_util.template_evasion[attack_method]['consequence'] = rank
         report_util.template_evasion['accuracy'] = acc_adv * 100
+        report_util.template_evasion[attack_method]['accuracy'] = acc_adv * 100
+        report_util.template_evasion[attack_method]['countermeasure'] = 'Adversarial Training, Feature Squeezing, JPEG Compression. etc'
         return ret_status, report_util
 
     # Write logs.

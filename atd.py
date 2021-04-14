@@ -5,6 +5,7 @@ import sys
 import time
 import argparse
 import configparser
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
 
 # ATD modules.
 from attacks.evasion import FGSM, CarliniL2, JSMA
@@ -172,7 +173,7 @@ if __name__ == '__main__':
 
     # Parse arguments.
     parser = argparse.ArgumentParser(description='Adversarial Threat Detector.')
-    parser.add_argument('--target_id', default='', type=int, help='Target\'s identifier for GyoiBoard.')
+    parser.add_argument('--target_id', default=0, type=int, help='Target\'s identifier for GyoiBoard.')
     parser.add_argument('--scan_id', default='', type=str, help='Scan\'s identifier for GyoiBoard.')
     parser.add_argument('--model_name', default='', type=str, help='Target model name.')
     parser.add_argument('--train_data_name', default='X_train.npz', type=str, help='Training dataset name.')
@@ -244,102 +245,20 @@ if __name__ == '__main__':
     config = configparser.ConfigParser()
     config.read(os.path.join(full_path, 'config.ini'))
 
+    # Load dataset.
+    ret_status, x_test_path, y_test_path, X_test, y_test = utility.load_dataset(args.test_data_name,
+                                                                                args.test_label_name,
+                                                                                args.use_x_test_num)
+    if ret_status is False:
+        utility.print_message(FAIL, 'Could not load dataset: {}'.format(args.op_type))
+        utility.write_log(20, '[Out] Adversarial Threat Detector [{}].'.format(file_name))
+        sys.exit(0)
+
     # Load target model.
     ret_status, model_path, model = utility.load_model(args.model_name)
     if ret_status is False:
         utility.write_log(20, '[Out] Adversarial Threat Detector [{}].'.format(file_name))
         sys.exit(0)
-
-    # Load test data.
-    ret_status, x_test_path, y_test_path, X_test, y_test = utility.load_dataset(args.test_data_name,
-                                                                                args.test_label_name,
-                                                                                args.use_x_test_num)
-
-    if ret_status is False:
-        utility.write_log(20, '[Out] Adversarial Threat Detector [{}].'.format(file_name))
-        sys.exit(0)
-
-    # Report setting.
-    report_path = report_util.make_report_dir()
-    sampling_idx = utility.random_sampling(data_size=len(X_test), sample_num=report_util.adv_sample_num)
-    benign_sample_list = report_util.make_image(X_test, 'benign', sampling_idx)
-
-    # Data to report's template.
-    report_util.template_target['model_path'] = model_path
-    report_util.template_target['dataset_path'] = x_test_path
-    report_util.template_target['label_path'] = y_test_path
-    report_util.template_target['dataset_num'] = len(X_test)
-    for (sample_path, elem) in zip(benign_sample_list, report_util.template_target['dataset_img'].keys()):
-        report_util.template_target['dataset_img'][elem] = sample_path
-
-    # Insert scan record.
-    if args.scan_id != '':
-        # Set attack's method.
-        attack_method = ''
-        if args.attack_type == 'data_poisoning':
-            attack_method = args.attack_data_poisoning
-        elif args.attack_type == 'model_poisoning':
-            attack_method = args.attack_model_poisoning
-        elif args.attack_type == 'evasion':
-            attack_method = args.attack_evasion
-            utility.insert_new_scan_record_evasion(args.target_id, args.scan_id, attack_method)
-            if args.attack_evasion == 'fgsm':
-                # Insert values to FGSM table.
-                utility.insert_new_scan_record_fgsm(args.target_id,
-                                                    args.scan_id,
-                                                    args.fgsm_epsilon,
-                                                    args.fgsm_eps_step,
-                                                    args.fgsm_targeted,
-                                                    args.fgsm_batch_size,
-                                                    args.use_x_test_num)
-            elif args.attack_evasion == 'cnw':
-                # Insert values to CnW table.
-                utility.insert_new_scan_record_cnw(args.target_id,
-                                                   args.scan_id,
-                                                   args.cnw_confidence,
-                                                   args.cnw_batch_size,
-                                                   args.use_x_test_num)
-            elif args.attack_evasion == 'jsma':
-                # Insert values to JSMA table.
-                utility.insert_new_scan_record_jsma(args.target_id,
-                                                    args.scan_id,
-                                                    args.jsma_theta,
-                                                    args.jsma_gamma,
-                                                    args.jsma_batch_size,
-                                                    args.use_x_test_num)
-        elif args.attack_type == 'exfiltration':
-            attack_method = args.attack_exfiltration
-
-        # Set defence's method.
-        # TODO: ディフェンスタイプを設定すること。
-        defence_method = ''
-        if args.defence_type == 'data_poisoning':
-            defence_method = args.attack_data_poisoning
-        elif args.defence_type == 'model_poisoning':
-            defence_method = args.attack_model_poisoning
-        elif args.defence_type == 'evasion':
-            defence_method = args.attack_evasion
-        elif args.defence_type == 'exfiltration':
-            defence_method = args.attack_exfiltration
-
-        # Insert values to Common table.
-        utility.insert_new_scan_record(args.target_id,
-                                       args.scan_id,
-                                       'Scanning',
-                                       args.model_name,
-                                       args.train_data_name,
-                                       args.use_x_train_num,
-                                       args.train_label_name,
-                                       args.test_data_name,
-                                       args.use_x_test_num,
-                                       args.test_label_name,
-                                       args.op_type,
-                                       args.attack_type,
-                                       attack_method,
-                                       args.defence_type,
-                                       defence_method,
-                                       utility.get_current_date(),
-                                       args.lang)
 
     # Preparation.
     ret_status, classifier = utility.wrap_classifier(model, X_test)
@@ -347,8 +266,77 @@ if __name__ == '__main__':
         utility.write_log(20, '[Out] Adversarial Threat Detector [{}].'.format(file_name))
         sys.exit(0)
 
-    # Attack or Defence.
+    # Attack or Defence or Test.
     if args.op_type == 'attack':
+        # Insert scan record.
+        if args.scan_id != '':
+            # Set attack's method.
+            attack_method = ''
+            if args.attack_type == 'data_poisoning':
+                attack_method = args.attack_data_poisoning
+            elif args.attack_type == 'model_poisoning':
+                attack_method = args.attack_model_poisoning
+            elif args.attack_type == 'evasion':
+                attack_method = args.attack_evasion
+                utility.insert_new_scan_record_evasion(args.target_id, args.scan_id, attack_method)
+                if args.attack_evasion == 'fgsm':
+                    # Insert values to FGSM table.
+                    utility.insert_new_scan_record_fgsm(args.target_id,
+                                                        args.scan_id,
+                                                        args.fgsm_epsilon,
+                                                        args.fgsm_eps_step,
+                                                        args.fgsm_targeted,
+                                                        args.fgsm_batch_size,
+                                                        args.use_x_test_num)
+                elif args.attack_evasion == 'cnw':
+                    # Insert values to CnW table.
+                    utility.insert_new_scan_record_cnw(args.target_id,
+                                                       args.scan_id,
+                                                       args.cnw_confidence,
+                                                       args.cnw_batch_size,
+                                                       args.use_x_test_num)
+                elif args.attack_evasion == 'jsma':
+                    # Insert values to JSMA table.
+                    utility.insert_new_scan_record_jsma(args.target_id,
+                                                        args.scan_id,
+                                                        args.jsma_theta,
+                                                        args.jsma_gamma,
+                                                        args.jsma_batch_size,
+                                                        args.use_x_test_num)
+            elif args.attack_type == 'exfiltration':
+                attack_method = args.attack_exfiltration
+
+            # Set defence's method.
+            # TODO: ディフェンスタイプを設定すること。
+            defence_method = ''
+            if args.defence_type == 'data_poisoning':
+                defence_method = args.attack_data_poisoning
+            elif args.defence_type == 'model_poisoning':
+                defence_method = args.attack_model_poisoning
+            elif args.defence_type == 'evasion':
+                defence_method = args.attack_evasion
+            elif args.defence_type == 'exfiltration':
+                defence_method = args.attack_exfiltration
+
+            # Insert values to Common table.
+            utility.insert_new_scan_record(args.target_id,
+                                           args.scan_id,
+                                           'Scanning',
+                                           args.model_name,
+                                           args.train_data_name,
+                                           args.use_x_train_num,
+                                           args.train_label_name,
+                                           args.test_data_name,
+                                           args.use_x_test_num,
+                                           args.test_label_name,
+                                           args.op_type,
+                                           args.attack_type,
+                                           attack_method,
+                                           args.defence_type,
+                                           defence_method,
+                                           utility.get_current_date(),
+                                           args.lang)
+
         # Accuracy on Benign Examples.
         ret_status, acc_benign = utility.evaluate(classifier, X_test=X_test, y_test=y_test)
         if ret_status is False:
@@ -358,6 +346,19 @@ if __name__ == '__main__':
             utility.print_message(OK, 'Accuracy on Benign Examples : {}%'.format(acc_benign * 100))
             report_util.template_target['accuracy'] = '{}%'.format(acc_benign * 100)
             utility.update_accuracy(args.scan_id, acc_benign * 100)
+
+        # Report setting.
+        report_path = report_util.make_report_dir()
+        sampling_idx = utility.random_sampling(data_size=len(X_test), sample_num=report_util.adv_sample_num)
+        benign_sample_list = report_util.make_image(X_test, 'benign', sampling_idx)
+
+        # Data to report's template.
+        report_util.template_target['model_path'] = model_path
+        report_util.template_target['dataset_path'] = x_test_path
+        report_util.template_target['label_path'] = y_test_path
+        report_util.template_target['dataset_num'] = len(X_test)
+        for (sample_path, elem) in zip(benign_sample_list, report_util.template_target['dataset_img'].keys()):
+            report_util.template_target['dataset_img'][elem] = sample_path
 
         # Execute scanning.
         ret_status, report_util = attack(utility, args, classifier, X_test, y_test, report_util)
@@ -403,16 +404,24 @@ if __name__ == '__main__':
                 # Insert values to exfiltration table.
                 utility.print_message(WARNING, 'Not implementation: {}'.format(args.attack_type))
     elif args.op_type == 'defence':
-        # Load test data.
+        # Load dataset.
         ret_status, _, _, X_train, y_train = utility.load_dataset(args.train_data_name,
                                                                   args.train_label_name,
                                                                   args.use_x_train_num)
-
         if ret_status is False:
             utility.write_log(20, '[Out] Adversarial Threat Detector [{}].'.format(file_name))
             sys.exit(0)
 
         defence(utility, args, classifier, X_train, y_train, X_test, y_test, report_util)
+    elif args.op_type == 'test':
+        # Accuracy on Benign Examples.
+        ret_status, acc_benign = utility.evaluate(classifier, X_test=X_test, y_test=y_test)
+        if ret_status is False:
+            utility.print_message(FAIL, 'Could not evaluate the model: {}'.format(args.model_name))
+            utility.write_log(20, '[Out] Adversarial Threat Detector [{}].'.format(file_name))
+            sys.exit(0)
+        else:
+            utility.print_message(OK, 'Accuracy on Benign Examples : {}%'.format(acc_benign * 100))
     else:
         utility.print_message(WARNING, 'Invalid operation type: {}'.format(args.op_type))
         sys.exit(0)

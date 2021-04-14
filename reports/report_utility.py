@@ -51,13 +51,13 @@ class ReportUtility:
                                          'node_injection': {'exist': False, 'date': '', 'consequence': '', 'ipynb_path': ''},
                                          'layer_injection': {'exist': False, 'date': '', 'consequence': '', 'ipynb_path': ''}}
         self.template_evasion = {'exist': False, 'consequence': 'Secure', 'summary': '', 'accuracy': '',
-                                 'fgsm': {'exist': False, 'date': '', 'consequence': 'Secure',
+                                 'fgsm': {'exist': False, 'date': '', 'consequence': 'Secure', 'accuracy': '',
                                           'ipynb_path': '', 'aes_path': '',
                                           'ae_img': {'img1': '', 'img2': '', 'img3': '', 'img4': '', 'img5': ''}},
-                                 'cnw': {'exist': False, 'date': '', 'consequence': 'Secure',
+                                 'cnw': {'exist': False, 'date': '', 'consequence': 'Secure', 'accuracy': '',
                                          'ipynb_path': '', 'aes_path': '',
                                          'ae_img': {'img1': '', 'img2': '', 'img3': '', 'img4': '', 'img5': ''}},
-                                 'jsma': {'exist': False, 'date': '', 'consequence': 'Secure',
+                                 'jsma': {'exist': False, 'date': '', 'consequence': 'Secure', 'accuracy': '',
                                           'ipynb_path': '', 'aes_path': '',
                                           'ae_img': {'img1': '', 'img2': '', 'img3': '', 'img4': '', 'img5': ''}}}
         self.template_exfiltration = {'exist': False, 'consequence': 'Secure', 'summary': '',
