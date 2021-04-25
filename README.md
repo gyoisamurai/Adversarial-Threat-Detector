@@ -7,12 +7,7 @@ We'll present a Adversarial Threat Detector at **Black Hat ASIA 2021 Arsenal**.
 
 <font size=4><b>Adversarial Threat Detector makes AI development <font color="red">Secure</font>.</b></font>
 
-<div align="center">
-  <center>
-  <img src="./img/gif_movie_atd_1.gif" width="700">
-  </center>
-  <br>
-</div>
+[![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/5jGbYJGO84A/0.jpg)](https://www.youtube.com/watch?v=5jGbYJGO84A)
 
 In recent years, deep learning technology has been developing, and various systems using deep learning are spreading in our society, such as face recognition, security cameras (anomaly detection), and ADAS (Advanced Driver-Assistance Systems).  
 
@@ -73,11 +68,11 @@ Sample notebook is [here](https://github.com/gyoisamurai/Adversarial-Threat-Dete
 
 #### 3. Fixing vulnerabilities (Fix)  
 ATD automatically fixes detected vulnerabilities.  
-**\* This feature will be supported in the next release.**  
+Current ATD supports the **Adversarial Training**, which is one of the defense methods against evasive attacks.  
+**\* Other defense methods are future work.**  
 
 #### 4. Check fixed vulnerabilities (Re-Scanning)  
 The ATD checks fixed vulnerabilities of the fixed classifier.  
-**\* This feature will be supported in the next release.**  
 
 ## Support
 #### Classifier type.  
@@ -98,23 +93,21 @@ Other attacks will be supported in the future.
 
 |Attack type|Image classifier|Text classifier|Other classifier|
 |:--|:--:|:--:|:--:|
-|Data Poisoning|-|-|-|
+|Data Poisoning|on going-|-|-|
 |Model Poisoning|-|-|-|
 |Evasion|supported|-|-|
-|Exfiltration|-|-|-|
+|Exfiltration|on going-|-|-|
 
 ## Road Map
 We will be releasing new features of ATD every other month.  
 The roadmap for ATD is as follows.  
 
 * 01.2021: Implementation of Evasion Attacks (completed).  
-* 02.2021: Implementation of "Fix" and "Re-Scanning" functions.  
-* 03.2021: Implementation of Exfiltration Attacks.  
-* 04.2021: Implementation of Detecting Model Poisoning.  
-* 05.2021: Implementation of Detecting Data Poisoning.  
-* 06.2021: Support for classifiers other than Keras.  
-* 07.2021: Web interface for sharing secure classifier.  
-* 08.2021: Support for non-image classifiers.  
+* 02.2021: Implementation of "Fix" and "Re-Scanning" functions (completed).  
+* 05.2021: Implementation of Exfiltration Attacks.  
+* 06.2021: Implementation of Detecting Data Poisoning.  
+* 07.2021: Implementation of Detecting Model Poisoning.  
+* 08.2021~: Support for other than Keras / non-image classifiers.  
 
 ## Installation
 1. git clone ATD's repository.  
@@ -142,18 +135,38 @@ You can execute various vulnerability scans by changing the arguments to the ATD
 |The current version of ATD only supports Evasion Attacks. Other attack methods will be supported in the future.|
 
 ```
-usage: atd.py [-h] [--model_name MODEL_NAME] [--train_data_name TRAIN_DATA_NAME] [--test_data_name TEST_DATA_NAME] [--use_x_train_num USE_X_TRAIN_NUM] [--use_x_test_num USE_X_TEST_NUM]
-              [--train_label_name TRAIN_LABEL_NAME] [--test_label_name TEST_LABEL_NAME] [--op_type {attack,defence}] [--attack_type {data_poisoning,model_poisoning,evasion,exfiltration}]
-              [--attack_data_poisoning {feature_collision,convex_polytope,bullseye_polytope}] [--attack_model_poisoning {node_injection,layer_injection}] [--attack_evasion {fgsm,cnw,jsma}]
-              [--fgsm_epsilon {0.01,0.05,0.1,0.15,0.2,0.25,0.3}] [--cnw_confidence {0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1.0}] [--jsma_theta {0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1.0}]
-              [--jsma_gamma {0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1.0}] [--attack_exfiltration {membership_inference,label_only,inversion}] [--defence_type {data_poisoning,model_poisoning,evasion,exfiltration}]
-              [--defence_evasion {adversarial_training,feature_squeezing,jpeg_compression}] [--adversarial_training_attack {fgsm,cnw,jsma}] [--adversarial_training_ratio {0.1,0.2,0.3,0.4,0.5,0.6,0.7}]
-              [--adversarial_training_batch_size {32,64,128,256,512}] [--adversarial_training_epochs {10,20,30,40,50}] [--adversarial_training_shuffle {True,False}] [--lang {en,ja}]
+usage: atd.py [-h] [--target_id TARGET_ID] [--scan_id SCAN_ID] [--model_name MODEL_NAME]
+              [--train_data_name TRAIN_DATA_NAME] [--test_data_name TEST_DATA_NAME]
+              [--use_x_train_num USE_X_TRAIN_NUM] [--use_x_test_num USE_X_TEST_NUM]
+              [--train_label_name TRAIN_LABEL_NAME] [--test_label_name TEST_LABEL_NAME]
+              [--op_type {attack,defence,test}]
+              [--attack_type {data_poisoning,model_poisoning,evasion,exfiltration}]
+              [--attack_data_poisoning {feature_collision,convex_polytope,bullseye_polytope}]
+              [--attack_model_poisoning {node_injection,layer_injection}]
+              [--attack_evasion {fgsm,cnw,jsma}] [--fgsm_epsilon {0.01,0.05,0.1,0.15,0.2,0.25,0.3}]
+              [--fgsm_eps_step {0.1,0.2,0.3,0.4,0.5}] [--fgsm_targeted]
+              [--fgsm_batch_size FGSM_BATCH_SIZE]
+              [--cnw_confidence {0.0,0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1.0}]
+              [--cnw_batch_size CNW_BATCH_SIZE]
+              [--jsma_theta {0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1.0}]
+              [--jsma_gamma {0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1.0}]
+              [--jsma_batch_size JSMA_BATCH_SIZE]
+              [--attack_exfiltration {membership_inference,label_only,inversion}]
+              [--defence_type {data_poisoning,model_poisoning,evasion,exfiltration}]
+              [--defence_evasion {adversarial_training,feature_squeezing,jpeg_compression}]
+              [--adversarial_training_attack {fgsm,cnw,jsma}]
+              [--adversarial_training_ratio {0.1,0.2,0.3,0.4,0.5,0.6,0.7}]
+              [--adversarial_training_batch_size {32,64,128,256,512}]
+              [--adversarial_training_epochs {10,20,30,40,50}] [--adversarial_training_shuffle]
+              [--lang {en,ja}]
 
 Adversarial Threat Detector.
 
 optional arguments:
   -h, --help            show this help message and exit
+  --target_id TARGET_ID
+                        Target's identifier for GyoiBoard.
+  --scan_id SCAN_ID     Scan's identifier for GyoiBoard.
   --model_name MODEL_NAME
                         Target model name.
   --train_data_name TRAIN_DATA_NAME
@@ -168,7 +181,7 @@ optional arguments:
                         Train label name.
   --test_label_name TEST_LABEL_NAME
                         Test label name.
-  --op_type {attack,defence}
+  --op_type {attack,defence,test}
                         operation type.
   --attack_type {data_poisoning,model_poisoning,evasion,exfiltration}
                         Specify attack type.
@@ -179,13 +192,22 @@ optional arguments:
   --attack_evasion {fgsm,cnw,jsma}
                         Specify method of Evasion Attack.
   --fgsm_epsilon {0.01,0.05,0.1,0.15,0.2,0.25,0.3}
-                        Specify Eps for FGSM.
-  --cnw_confidence {0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1.0}
+                        Specify Epsilon for FGSM.
+  --fgsm_eps_step {0.1,0.2,0.3,0.4,0.5}
+                        Specify Epsilon step for FGSM.
+  --fgsm_targeted       Specify targeted evasion for FGSM.
+  --fgsm_batch_size FGSM_BATCH_SIZE
+                        Specify batch size for FGSM.
+  --cnw_confidence {0.0,0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1.0}
                         Specify Confidence for C&W.
+  --cnw_batch_size CNW_BATCH_SIZE
+                        Specify batch size for CnW.
   --jsma_theta {0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1.0}
                         Specify Theta for JSMA.
   --jsma_gamma {0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1.0}
                         Specify Gamma for JSMA.
+  --jsma_batch_size JSMA_BATCH_SIZE
+                        Specify batch size for JSMA.
   --attack_exfiltration {membership_inference,label_only,inversion}
                         Specify method of Exfiltration Attack.
   --defence_type {data_poisoning,model_poisoning,evasion,exfiltration}
@@ -200,35 +222,32 @@ optional arguments:
                         Specify batch size for Adversarial Training.
   --adversarial_training_epochs {10,20,30,40,50}
                         Specify epochs for Adversarial Training.
-  --adversarial_training_shuffle {True,False}
+  --adversarial_training_shuffle
                         Specify shuffle for Adversarial Training.
   --lang {en,ja}        Specify language of report.
 ```
 
-|Parameter|Overview|
-|:---|:---|
-|model_name|Specify the file name of the trained model to be scanned for vulnerabilities. You need to put the model in HDF5 format in the `targets` directory.|
-|test_data_name|Specify the file name of the dataset that can be inferred by the classifier specified by model_name. You need to put the files in npz format in the `targets` directory. Also, the dataset should contain at least 100 data.|
-|use_x_test_num|Specify the number of data to be used for vulnerability scanning from `dataset_name`.|
-|test_label_name|Specify the file name of the label of the dataset specified by `dataset_name`. You need to put the files in npz format in the `targets` directory. |
-|attack_type|Specifies the attack type for the classifier specified by `model_name`. Currently only `evasion` is supported.|
-|attack_evasion|Specifies the method of evasion attack (If `evasion` is specified for `attack_type`). |
-|lang|Specify the language of the report. Default is `en`.|
-
 ### Tutorial
-#### Execution of Evasion Attack (FGSM).
+#### Attacks
+##### Evasion Attack (FGSM).
 ```
-root@kali:~/Adversarial-Threat-Detector# python3 atd.py --model_name target_model.h5 --dataset_name X_test.npz --label_name y_test.npz --use_dataset_num 100 --attack_type evasion --evasion_method fgsm
-```
-
-#### Execution of Evasion Attack (C&W).
-```
-root@kali:~/Adversarial-Threat-Detector# python3 atd.py --model_name target_model.h5 --dataset_name X_test.npz --label_name y_test.npz --use_dataset_num 100 --attack_type evasion --evasion_method cnw
+root@kali:~/Adversarial-Threat-Detector# python3 atd.py --op_type attack --model_name "[path]"/model.h5 --test_data_name "[path]"/X_test.npz --test_label_name "[path]"/y_test.npz --use_x_test_num 100 --attack_type evasion --attack_evasion fgsm --fgsm_epsilon 0.05
 ```
 
-#### Execution of Evasion Attack (JSMA).
+##### Evasion Attack (C&W).
 ```
-root@kali:~/Adversarial-Threat-Detector# python3 atd.py --model_name target_model.h5 --dataset_name X_test.npz --label_name y_test.npz --use_dataset_num 100 --attack_type evasion --evasion_method jsma
+root@kali:~/Adversarial-Threat-Detector# python3 atd.py --op_type attack --model_name "[path]"/model.h5 --test_data_name "[path]"/X_test.npz --test_label_name "[path]"/y_test.npz --use_x_test_num 100 --attack_type evasion --attack_evasion cnw
+```
+
+##### Evasion Attack (JSMA).
+```
+root@kali:~/Adversarial-Threat-Detector# python3 atd.py --op_type attack --model_name "[path]"/model.h5 --test_data_name "[path]"/X_test.npz --test_label_name "[path]"/y_test.npz --use_x_test_num 100 --attack_type evasion --attack_evasion jsma
+```
+
+#### Defense
+##### Adversarial Training
+```
+root@kali:~/Adversarial-Threat-Detector# python3 atd.py --op_type defence --model_name "[path]"/model.h5 --train_data_name "[path]"/X_train.npz --train_label_name "[path]"/y_train.npz --test_data_name "[path]"/X_test.npz --test_label_name "[path]"/y_test.npz --use_x_train_num 50000 --use_x_test_num 10000 --defence_type evasion --defence_evasion adversarial_training --adversarial_training_attack fgsm --adversarial_training_ratio 0.5 --adversarial_training_batch_size 128 --adversarial_training_epochs 10 --adversarial_training_shuffle
 ```
 
 ## Demo
@@ -252,10 +271,13 @@ root@kali:~/Adversarial-Threat-Detector# mv demo_model.h5 X_test.npz y -O X_test
 
 4. Run ATD.  
 ```
-root@kali:~/Adversarial-Threat-Detector# python3 atd.py --model_name demo_model.h5 --dataset_name X_test.npz --label_name y_test.npz --use_dataset_num 100 --attack_type evasion --evasion_method fgsm
+root@kali:~/Adversarial-Threat-Detector# python3 atd.py --op_type attack --model_name ./targets/model.h5 --test_data_name ./targets/X_test.npz --test_label_name ./targets/y_test.npz --use_x_test_num 100 --attack_type evasion --attack_evasion fgsm --fgsm_epsilon 0.05
+
 ..snip..
+
 [!] Created report: ~/Adversarial-Threat-Detector/reports/../reports/20210217151416_scan/scan_report.html
 atd.py Done!!
+```
 ```
 
 5. Check scan report (html and ipynb).  
