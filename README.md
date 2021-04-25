@@ -7,7 +7,7 @@ We'll present a Adversarial Threat Detector at **Black Hat ASIA 2021 Arsenal**.
 
 <font size=4><b>Adversarial Threat Detector makes AI development <font color="red">Secure</font>.</b></font>
 
-[![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/5jGbYJGO84A/0.jpg)](https://www.youtube.com/watch?v=5jGbYJGO84A)
+[![Demo movie on youtube](https://img.youtube.com/vi/5jGbYJGO84A/0.jpg)](https://www.youtube.com/watch?v=5jGbYJGO84A)
 
 In recent years, deep learning technology has been developing, and various systems using deep learning are spreading in our society, such as face recognition, security cameras (anomaly detection), and ADAS (Advanced Driver-Assistance Systems).  
 

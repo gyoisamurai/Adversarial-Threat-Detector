@@ -7,7 +7,7 @@
 
 <font size=4><b>Adversarial Threat DetectorはAI開発を<font color="red">安全</font>にします。</b></font>
 
-[![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/5jGbYJGO84A/0.jpg)](https://www.youtube.com/watch?v=5jGbYJGO84A)
+[![Demo movie on youtube](https://img.youtube.com/vi/5jGbYJGO84A/0.jpg)](https://www.youtube.com/watch?v=5jGbYJGO84A)
 
 近年、ディープラーニング技術の発展により、顔認証や防犯カメラ（異常検知）、そして自動運転技術など、ディープラーニングを使用したシステムが普及しています。その一方で、ディープラーニングのアルゴリズムの脆弱性を突く攻撃手法の研究も急速に進んでいます。例えば、システムへの入力データを細工することで、これを攻撃者が意図したクラスに誤分類させる回避攻撃や、システムが学習したデータを推論する抽出攻撃などがあります。これらの攻撃に適切に対処していない場合、顔認証が突破されて不正侵入を許したり、学習データが推論されることで情報漏えいが発生するなど、重大なインシデントに繋がることになります。  
 
