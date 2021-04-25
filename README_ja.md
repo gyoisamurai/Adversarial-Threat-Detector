@@ -2,8 +2,10 @@
 [English page](./README.md)  
 
 ### Topics
-アジア最大級のハッカーカンファレンスである**Black Hat ASIA 2021**にて、Adversarial Threat Detectorを発表します！  
-[詳細はこちら](https://www.blackhat.com/asia-21/arsenal/schedule/#adversarial-threat-detector-22628)  
+2021年04月：ATD用のWebインタフェース「**GyoiBoard**」をリリースしました！  
+　->[詳細はこちら](https://github.com/gyoisamurai/GyoiBoard)  
+2021年03月：アジア最大級のハッカーカンファレンスである**Black Hat ASIA 2021**にて、Adversarial Threat Detectorを発表します！  
+　->[詳細はこちら](https://www.blackhat.com/asia-21/arsenal/schedule/#adversarial-threat-detector-22628)  
 
 <font size=4><b>Adversarial Threat DetectorはAI開発を<font color="red">安全</font>にします。</b></font>
 
