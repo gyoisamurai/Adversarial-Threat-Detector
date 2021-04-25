@@ -273,9 +273,7 @@ root@kali:~/Adversarial-Threat-Detector# mv demo_model.h5 X_test.npz y -O X_test
 4. ATDを実行します。  
 ```
 root@kali:~/Adversarial-Threat-Detector# python3 atd.py --op_type attack --model_name ./targets/model.h5 --test_data_name ./targets/X_test.npz --test_label_name ./targets/y_test.npz --use_x_test_num 100 --attack_type evasion --attack_evasion fgsm --fgsm_epsilon 0.05
-
 ..snip..
-
 [!] Created report: ~/Adversarial-Threat-Detector/reports/../reports/20210217151416_scan/scan_report.html
 atd.py Done!!
 ```

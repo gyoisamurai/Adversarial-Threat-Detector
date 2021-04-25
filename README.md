@@ -69,7 +69,7 @@ Sample notebook is [here](https://github.com/gyoisamurai/Adversarial-Threat-Dete
 #### 3. Fixing vulnerabilities (Fix)  
 ATD automatically fixes detected vulnerabilities.  
 Current ATD supports the **Adversarial Training**, which is one of the defense methods against evasive attacks.  
-**\* Other defense methods are future work.**  
+**\* Other defense methods will be supported in the future.**  
 
 #### 4. Check fixed vulnerabilities (Re-Scanning)  
 The ATD checks fixed vulnerabilities of the fixed classifier.  
@@ -93,10 +93,10 @@ Other attacks will be supported in the future.
 
 |Attack type|Image classifier|Text classifier|Other classifier|
 |:--|:--:|:--:|:--:|
-|Data Poisoning|on going-|-|-|
+|Data Poisoning|on going|-|-|
 |Model Poisoning|-|-|-|
 |Evasion|supported|-|-|
-|Exfiltration|on going-|-|-|
+|Exfiltration|on going|-|-|
 
 ## Road Map
 We will be releasing new features of ATD every other month.  
@@ -272,12 +272,9 @@ root@kali:~/Adversarial-Threat-Detector# mv demo_model.h5 X_test.npz y -O X_test
 4. Run ATD.  
 ```
 root@kali:~/Adversarial-Threat-Detector# python3 atd.py --op_type attack --model_name ./targets/model.h5 --test_data_name ./targets/X_test.npz --test_label_name ./targets/y_test.npz --use_x_test_num 100 --attack_type evasion --attack_evasion fgsm --fgsm_epsilon 0.05
-
 ..snip..
-
 [!] Created report: ~/Adversarial-Threat-Detector/reports/../reports/20210217151416_scan/scan_report.html
 atd.py Done!!
-```
 ```
 
 5. Check scan report (html and ipynb).  
